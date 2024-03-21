@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtokens';
+import jwt from 'jsonwebtoken';
 import userSchema from "../models/userModel.js";
 import { secret_key } from '../utils/configuration.js';
 
 
-const signUp = async (req, res) => {
+export const signUp = async (req, res) => {
     try {
         const { username, email, password } = req;
         const userExist = await userSchema.username.findOne({email})
@@ -40,7 +40,7 @@ const signUp = async (req, res) => {
     }
 }
 
-const signIn = async (req, res) => {
+export const signIn = async (req, res) => {
     try {
         const { username, email, password } = req;
         const userExist = await userSchema.username.findOne({email})
