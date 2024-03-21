@@ -1,9 +1,13 @@
 import express from "express";
+import cors from "cors";
 import mongoose from "mongoose";
 import { dbConnStr, PORT } from "./utils/configuration.js";
 import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
+
+app.use(cors())
+
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
@@ -11,10 +15,10 @@ app.use('/user', userRoutes);
 
 app.get('/', (req, res) => {
     if (res.statusCode === 200) {
-        res.send("Welcome to YouTube server");
+        return res.status(200).json({message: "Welcome to YouTube server"});
     }else{
         console.log("Server is not running");
-    }S
+    }
     
 })
 
