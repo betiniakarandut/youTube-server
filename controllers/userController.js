@@ -17,22 +17,24 @@ export const signUp = async (req, res) => {
         const newUser = new User({
             email,
             hashed_password,
-            // username
+            username
         })
+        // console.log(newUser);
 
         const payload = {
             userId: newUser._id,
-            email: newUser.email
+            email: newUser.email,
+            username: newUser.username
         }
-        const jwtToken = jwt.sign(payload, secret_key, {expires: '24h'});
+        const jwtToken = jwt.sign(payload, secret_key, {expiresIn: "24h"});
 
+        // console.log(jwtToken);
 
         await newUser.save();
-        return res.status(200).json({ jwtToken, userExist });
-    } catch{
-        (err) => {
+        return res.status(200).json({ jwtToken, newUser });
+    } catch(err){
             return res.status(500).json({message:`Server error: ${err}`});
-        }
+
     }
 }
 
@@ -44,7 +46,9 @@ export const signIn = async (req, res) => {
             return res.status(401).json({message:"Invalid credentials. Check and try again"});
         }
 
-        const passwordMatch = await bcrypt.compare(password, userExist.hashed_password);
+        const hashed_password = await bcrypt.hash(password, 10);
+
+        const passwordMatch = await bcrypt.compare(password, hashed_password);
         if (!passwordMatch) {
             return res.status(401).json({message: "Invalid password. Check and try again"});
         }
@@ -54,10 +58,10 @@ export const signIn = async (req, res) => {
             userId: userExist._id,
             email: userExist.email
         }
-        const jwtToken = jwt.sign(payload, secret_key, {expires: '24h'})
+        const jwtToken = jwt.sign(payload, secret_key, {expiresIn: '24h'})
 
         return res.status(200).json({jwtToken, userExist});
     } catch(err){
-            return res.status(500).json({message:`Server error: ${err}`})
+        return res.status(500).json({message:`Server error: ${err}`})
     }
 }
