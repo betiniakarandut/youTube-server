@@ -11,7 +11,6 @@ app.use(cors())
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-app.use('/user', userRoutes);
 
 app.get('/', (req, res) => {
     if (res.statusCode === 200) {
@@ -21,6 +20,8 @@ app.get('/', (req, res) => {
     }
     
 })
+
+app.use('/user', userRoutes);
 
 mongoose.connect(dbConnStr, { useNewUrlParser: true })
 .then( () => {
