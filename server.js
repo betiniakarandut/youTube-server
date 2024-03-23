@@ -18,7 +18,6 @@ app.get('/', (req, res) => {
     }else{
         console.log("Server is not running");
     }
-    
 })
 
 app.use('/user', userRoutes);
