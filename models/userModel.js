@@ -11,12 +11,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        lowercase: true,  
+        trim: true,
+        lowercase: true,
     },
     password: {
         type: String,
-        // required: true,
         minlength: 8,
+        trim: true,
+    },
+    verified: {
+        type: Boolean,
     },
     roles: {
         type: String,
@@ -29,11 +33,6 @@ const userSchema = new mongoose.Schema({
     },
     phone: {
         type: String,
-        validator: {
-            validator: function (value){
-                return /^\d{3}-\d{3}-\d{4}$/.test(value);
-            }
-        }
     },
     address: {
         street: String,
