@@ -2,11 +2,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const pwd = process.env.PASSWORD;
-const dbusername = process.env.DB_USERNAME
+const dbUsername = process.env.DB_USERNAME;
+const dbPassword = process.env.DB_PASSWORD;
 
-export const PORT = process.env.PORT;
+const encodedPassword = encodeURIComponent(dbPassword)
 
-export const secret_key = process.env.SECRET_KEY;
 
-export const dbConnStr = `mongodb+srv://${dbusername}:${pwd}@cluster0.z3afn56.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+export const dbConnStr = `mongodb+srv://${process.env.DB_USERNAME}:${encodedPassword}@cluster0.z3afn56.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
