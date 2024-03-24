@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import { dbConnStr, PORT } from "./utils/configuration.js";
+import { dbConnStr } from "./utils/configuration.js";
 import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
@@ -26,8 +26,8 @@ mongoose.connect(dbConnStr, { useNewUrlParser: true })
 .then( () => {
     console.log("YouTube database is connected");
 
-    app.listen(PORT, () => {
-        console.log(`server is running on port 127.0.0.1:${PORT}`);
+    app.listen(process.env.PORT, () => {
+        console.log(`server is running on port 127.0.0.1:${process.env.PORT}`);
     })
 }
 ).catch( (err) => {
