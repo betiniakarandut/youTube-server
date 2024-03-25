@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt'
 import nodemailer from "nodemailer";
 import { randomBytes } from "crypto";
 import jwt from 'jsonwebtoken';
+import twilio from "twilio";
 import userVerification from '../models/userVerification.js';
 import User from "../models/userModel.js";
 import userOTPVerification from '../models/userOTPModel.js';
@@ -111,12 +112,9 @@ export const signUp = async (req, res) => {
             //     return uniqueCode
             // }
 
-            // console.log(verificationCode())
-            // const verificationCode = Math.floor(100000 + Math.random() * 900000);
-
             // Send verification email
             // await sendVerificationEmail(savedUser, res, verificationCode());
-            await sendOTPVerificationEmail(savedUser, res);
+            await sendOTPVerificationEmailAndSMS(savedUser, res);
 
             return res.status(200).json({
                 message: "New user created successfully",
@@ -230,16 +228,16 @@ export const verify = async (req, res) => {
     }
 };
 
-export const sendOTPVerificationEmail = async ({ _id, email }, res) => {
+export const sendOTPVerificationEmailAndSMS = async ({ _id, email, phone }, res) => {
     try {
         // Generate verification code (6-digit)
-        const otpCode = () => {
+        const generateOTP = () => {
             const buffer = randomBytes(3);
             const uniqueCode = Math.floor(buffer.readUIntBE(0, 3) % 1000000).toString().padStart(6, '0')
             return uniqueCode
         }
 
-        const otp = otpCode();
+        const otp = generateOTP();
 
         console.log(`This your otp ${otp}`);
 
@@ -251,15 +249,23 @@ export const sendOTPVerificationEmail = async ({ _id, email }, res) => {
             complete your signup</p><p>Note: <b>Your OTP will expire in 30minutes</b></p>`
         }
 
+        const smsOptions = {
+          body: `Betini sent you a code:Your verification code is:${otp}`,
+          from: "+19035463210",
+          to: phone,
+        }
+
         const hashedOTP = await bcrypt.hash(otp, 10);
 
         const transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
                 user: process.env.AUTH_EMAIL,
-                pass: process.env.AUTH_PWD
+                pass: process.env.AUTH_PWD,
             }
         });
+
+        const client = twilio(process.env.ACCT_SSID, process.env.AUTH_TOKEN);
 
         const newOTP = new userOTPVerification({
             userId: _id,
@@ -271,13 +277,15 @@ export const sendOTPVerificationEmail = async ({ _id, email }, res) => {
         await newOTP.save();
 
         await transporter.sendMail(mailOptions);
+        await client.messages.create(smsOptions);
 
         res.status(200).json({
             status: "PENDING",
-            message: "OTP has been sent to your email",
+            message: "OTP has been sent to your email and through SMS",
             data: {
                 userId: _id,
                 email,
+                phone,
             },
         })
 
