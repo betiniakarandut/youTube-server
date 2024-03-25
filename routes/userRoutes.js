@@ -3,8 +3,8 @@ import {
     signUp,
     signIn,
     verify, 
-    sendOTPVerificationEmail,
-    verifyOTP
+    verifyOTP,
+    sendOTPVerificationEmailAndSMS,
 } from '../controllers/userController.js';
 
 
@@ -12,7 +12,7 @@ const userRoutes = express.Router()
 
 userRoutes.post('/signup', signUp);
 userRoutes.post('/signin', signIn);
-userRoutes.post('/sendotpverificationEmail', sendOTPVerificationEmail)
+userRoutes.post('/sendotpverificationsms', sendOTPVerificationEmailAndSMS)
 userRoutes.post('/verifyotp', verifyOTP);
 userRoutes.get('/verify/:userId/:uniqueString', verify)
 
