@@ -3,6 +3,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import { dbConnStr } from "./utils/configuration.js";
 import userRoutes from "./routes/userRoutes.js";
+import videoRoute from "./routes/videoRoutes.js";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/user', userRoutes);
+app.use('/video', videoRoute);
 
 mongoose.connect(dbConnStr, { useNewUrlParser: true })
 .then( () => {
