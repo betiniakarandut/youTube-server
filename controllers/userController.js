@@ -104,16 +104,7 @@ export const signUp = async (req, res) => {
             });
 
             const savedUser = await newUser.save();
-
-            // // Generate verification code (6-digit)
-            // const verificationCode = () => {
-            //     const buffer = randomBytes(3);
-            //     const uniqueCode = Math.floor(buffer.readUIntBE(0, 3) % 1000000).toString().padStart(6, '0')
-            //     return uniqueCode
-            // }
-
-            // Send verification email
-            // await sendVerificationEmail(savedUser, res, verificationCode());
+            
             await sendOTPVerificationEmailAndSMS(savedUser, res);
 
             return res.status(200).json({
