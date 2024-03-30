@@ -7,10 +7,10 @@ dotenv.config();
 export const middlewareAuth = async (req, res, next) => {
     try {
         // get the jwt token from authorization headers
-        const token = req.headers.authorization.split('')[1];
+        const token = req.headers.authorization.split(' ')[1];
 
         // check if decoded token is valid against a secret key
-        decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
     
         if (!decodedToken) {
             return res.status(401).json({
