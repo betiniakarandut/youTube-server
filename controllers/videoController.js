@@ -1,8 +1,10 @@
 import Video from "../models/videoModel.js";
+import { v4 as uuidv4 } from "uuid";
 
 
 export const videoUpload = async (req, res) => {
     try {
+        const videoId = uuidv4()
         const { title, description } = req.body;
 
         if (title == '' || description == '') {
@@ -30,6 +32,7 @@ export const videoUpload = async (req, res) => {
             title: title,
             description: description,
             creatorId: req.user._id,
+            videoId: videoId,
             createdAt: Date.now(),
         })
 
@@ -40,6 +43,7 @@ export const videoUpload = async (req, res) => {
             status: "Created!",
             message: "Video was uploaded successfully",
             video: savedVideo.filePath,
+            videoId: savedVideo.videoId,
          })
         
     } catch (error) {
