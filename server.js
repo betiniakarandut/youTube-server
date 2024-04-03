@@ -4,6 +4,10 @@ import mongoose from "mongoose";
 import { dbConnStr } from "./utils/configuration.js";
 import userRoutes from "./routes/userRoutes.js";
 import videoRoute from "./routes/videoRoutes.js";
+import commentRoute from "./routes/commentRoute.js";
+import likeRoute from "./routes/likeRoute.js";
+import channelRoute from "./routes/channelRoutes.js";
+import viewsRoute from "./routes/viewsRoutes.js";
 
 const app = express();
 
@@ -23,6 +27,11 @@ app.get('/', (req, res) => {
 
 app.use('/user', userRoutes);
 app.use('/video', videoRoute);
+app.use('/comments', commentRoute);
+app.use('/likes', likeRoute);
+app.use('/channel', channelRoute);
+app.use('/views', viewsRoute);
+
 
 mongoose.connect(dbConnStr, { useNewUrlParser: true })
 .then( () => {
