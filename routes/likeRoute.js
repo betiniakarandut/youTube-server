@@ -2,8 +2,8 @@ import express from 'express';
 import {
     likeVideo, 
     unlikeVideo 
-} from '../controllers/likesController';
-import { middlewareAuth } from '../middlewares/userAuth';
+} from '../controllers/likesController.js';
+import { middlewareAuth } from '../middlewares/userAuth.js';
 
 const likeRoute = express.Router();
 
