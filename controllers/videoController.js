@@ -1,11 +1,10 @@
 import Video from "../models/videoModel.js";
-import { v4 as uuidv4 } from "uuid";
 
 
 export const videoUpload = async (req, res) => {
     try {
         
-        const videoId = uuidv4();
+        const videoId = req.params.videoId;
 
         const { title, description } = req.body;
 
@@ -49,7 +48,7 @@ export const videoUpload = async (req, res) => {
          })
         
     } catch (error) {
-        console.log(err);
+        console.log(error);
         return res.status(401).json({
             status: "FAILED",
             message: "Failed to upload video"
