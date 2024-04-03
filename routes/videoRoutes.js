@@ -7,6 +7,6 @@ const videoRoute = express.Router();
 
 const uploads = multer({dest: 'uploads/'});
 
-videoRoute.post('/upload', uploads.single('video'), middlewareAuth, videoUpload);
+videoRoute.post('/upload:videoId', middlewareAuth, uploads.single('video'), videoUpload);
 
 export default videoRoute;

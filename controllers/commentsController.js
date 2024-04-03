@@ -1,7 +1,10 @@
 import Comments from "../models/commentsModel";
+import { v4 as uuidv4 } from "uuid";
 
 export const comment = async (req, res) => {
     try {
+
+        const commentId = uuidv4();
         
         const userId = req.user._id;
         const videoId = req.params.videoId;

@@ -4,7 +4,9 @@ import { v4 as uuidv4 } from "uuid";
 
 export const videoUpload = async (req, res) => {
     try {
-        const videoId = uuidv4()
+        
+        const videoId = uuidv4();
+
         const { title, description } = req.body;
 
         if (title == '' || description == '') {
