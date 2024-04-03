@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
-import User from "./userModel";
 
 const commentsSchema = new mongoose.Schema({
-    userId: {type:mongoose.Schema.ObjectId, ref: User},
-    videoId: {type: mongoose.Schema.ObjectId},
+    userId: {type:mongoose.Schema.Types.ObjectId, ref: 'User'},
+    videoId: {type: mongoose.Schema.Types.ObjectId, ref: 'Video'},
     text: String,
     createdAt: Date,
 });
