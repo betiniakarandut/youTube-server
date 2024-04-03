@@ -1,29 +1,34 @@
-import Comments from "../models/commentsModel";
-import { v4 as uuidv4 } from "uuid";
+import Comments from "../models/commentsModel.js";
 
 export const comment = async (req, res) => {
     try {
-
-        const commentId = uuidv4();
         
         const userId = req.user._id;
         const videoId = req.params.videoId;
         const { text } = req.body;
 
-        const newComment = new Comments ({
-            videoId,
-            userId,
-            text,
-            createdAt: Date.now(),
-        });
+        if (userId & videoId) {
+            const newComment = new Comments ({
+                videoId,
+                userId,
+                text,
+                createdAt: Date.now(),
+            });
 
-        const saveComment = await newComment.save();
+            const savedComment = await newComment.save();
 
-        return res.status(200).json({
-            status: "SUCCESS!",
-            message: "Comment was added successfully",
-            comment: text,
-        });
+            return res.status(200).json({
+                status: "SUCCESS!",
+                message: "Comment was added successfully",
+                comment: savedComment.text,
+            });
+        }
+        else {
+            return res.status(403).json({
+                status: "FAILED",
+                message: "Unauthorized"
+            });
+        }
 
     } catch (error) {
         console.log(error);
