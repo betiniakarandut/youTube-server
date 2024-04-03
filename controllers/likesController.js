@@ -1,4 +1,4 @@
-import Likes from "../models/likesModel";
+import Likes from "../models/likesModel.js";
 
 export const likeVideo = async (req, res) => {
     try {
@@ -63,6 +63,6 @@ export const unlikeVideo = async (req, res) => {
         return res.status(500).json({
             status: "FAILED",
             message: "Oop! Something went wrong. Try again!!"
-        })
+        });
     }
 }
