@@ -1,15 +1,15 @@
 import express from "express";
-import { middlewareAuth } from "../middlewares/userAuth";
+import { middlewareAuth } from "../middlewares/userAuth.js";
 import { 
     comment, 
     updateComment, 
     deleteComment,
-} from "../controllers/commentsController";
+} from "../controllers/commentsController.js";
 
-commentRoute = express.Router();
+const commentRoute = express.Router();
 
 commentRoute.post('/:commentId', middlewareAuth, comment);
-commentRoute.update('/:commentId', middlewareAuth, updateComment);
+commentRoute.put('/:commentId', middlewareAuth, updateComment);
 commentRoute.delete('/:commentId', middlewareAuth, deleteComment);
 
 export default commentRoute;
