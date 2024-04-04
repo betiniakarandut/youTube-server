@@ -3,9 +3,8 @@ import Video from "../models/videoModel.js";
 
 export const videoUpload = async (req, res) => {
     try {
-        
-        const videoId = req.params.videoId;
 
+        const userId = req.user._id;
         const { title, description } = req.body;
 
         if (title == '' || description == '') {
@@ -22,7 +21,7 @@ export const videoUpload = async (req, res) => {
             })
         }
         
-        if (!req.user) {
+        if (!userId) {
             return res.status(401).json({
                 status: "FAILED",
                 message: "User is not authenticated"
@@ -32,9 +31,8 @@ export const videoUpload = async (req, res) => {
         const newVideo = new Video ({
             title: title,
             description: description,
-            creatorId: req.user._id,
-            videoId: videoId,
-            createdAt: Date.now(),
+            creatorId: userId,
+            createdAt: Video.createdAt,
         })
 
          const savedVideo = await newVideo.save()
@@ -44,8 +42,9 @@ export const videoUpload = async (req, res) => {
             status: "Created!",
             message: "Video was uploaded successfully",
             video: savedVideo.filePath,
-            videoId: savedVideo.videoId,
-         })
+            videoId: savedVideo._id,
+            Time: savedVideo.createdAt,
+         });
         
     } catch (error) {
         console.log(error);

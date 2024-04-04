@@ -8,7 +8,7 @@ import {
 
 const commentRoute = express.Router();
 
-commentRoute.post('/:commentId', middlewareAuth, comment);
+commentRoute.post('/:videoId', middlewareAuth, comment);
 commentRoute.put('/:commentId', middlewareAuth, updateComment);
 commentRoute.delete('/:commentId', middlewareAuth, deleteComment);
 

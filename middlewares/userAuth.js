@@ -19,8 +19,9 @@ export const middlewareAuth = async (req, res, next) => {
             });
         }
 
+        const user = await User.findById(decodedToken.userId);
+
         if (decodedToken.exp < Date.now() / 1000) {
-            const user = await User.findById(decodedToken.userId);
             if (!user) {
                 return res.status(403).json({
                     status: "FAILED",
@@ -32,11 +33,12 @@ export const middlewareAuth = async (req, res, next) => {
             res.setHeader('Authorization', `Beare ${newToken}`);
         }
         // assign user to the id associated with the token
-        req.user = decodedToken;
+        req.user = user;
 
         next();
 
     } catch (error) {
+        console.log("Internal server error:", error)
         if (error instanceof jwt.TokenExpiredError || error instanceof jwt.JsonWebTokenError) {
             console.log(error);
             return res.status(401).json({
@@ -44,10 +46,10 @@ export const middlewareAuth = async (req, res, next) => {
                 message: `Token expired`
             });
         }
-        res.status(500).json({
+        return res.status(500).json({
             status: "FAILED",
-            message: "Internal server error"
-        })
+            message: "Internal server error ok"
+        });
 
     }      
 }

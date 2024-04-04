@@ -7,7 +7,9 @@ export const comment = async (req, res) => {
         const videoId = req.params.videoId;
         const { text } = req.body;
 
-        if (userId & videoId) {
+        console.log("userId:", userId);
+        console.log("videoId:", videoId);
+        if (userId || videoId) {
             const newComment = new Comments ({
                 videoId,
                 userId,
@@ -20,7 +22,9 @@ export const comment = async (req, res) => {
             return res.status(200).json({
                 status: "SUCCESS!",
                 message: "Comment was added successfully",
-                comment: savedComment.text,
+                commentId: savedComment._id,
+                Comment: savedComment.text,
+                Time: savedComment.createdAt
             });
         }
         else {
@@ -52,7 +56,7 @@ export const updateComment = async (req, res) => {
             });
         }
         
-        const existingComment = await Comments.findById({commentId});
+        const existingComment = await Comments.findById({_id: commentId});
 
         if (existingComment.userId.toString() !== userId.toString()) {
             return res.status(403).json({
@@ -94,10 +98,13 @@ export const deleteComment = async (req, res) => {
                 message: "Comment was not found or user is not authorized to delete comment"
             })
         }
+
+        console.log("Deleted Successfully");
         
         return res.status(200).json({
             status: "Success",
-            message:"Comment was deleted successfully"
+            message:"Comment was deleted successfully",
+            timeOfDelete: deletedComment.createdAt,
         });
 
     } catch (error) {
