@@ -5,7 +5,9 @@ const videoModelSchema = new mongoose.Schema({
     description: String,
     filePath: String,
     creatorId: String,
-    videoId: String,
+    videoId: {
+        type: String,   
+        unique: true},
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     createdAt: { type: Date, default: Date.now() },
     views: { type: Number, default: 0},
