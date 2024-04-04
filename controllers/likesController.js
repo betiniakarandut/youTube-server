@@ -1,9 +1,20 @@
 import Likes from "../models/likesModel.js";
+import Video from "../models/videoModel.js";
 
 export const likeVideo = async (req, res) => {
     try {
         const videoId = req.params.videoId;
+        console.log(`This is video Id of likes controller: ${videoId}`);
         const userId = req.user._id;
+
+        // does video Id exists?
+        const existingVideo = await Video.findById(videoId);
+        if (!existingVideo) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "Video not found"
+            });
+        }
 
         if (!userId) {
             return res.status(403).json({
@@ -15,7 +26,7 @@ export const likeVideo = async (req, res) => {
         const existingLike = await Likes.findOne({userId, videoId});
         if (existingLike) {
             return res.status(200).json({
-                status: "Success",
+                status: "SUCCESS",
                 message: "You already liked this video"
             })
         }
@@ -23,12 +34,14 @@ export const likeVideo = async (req, res) => {
         const newLike = new Likes ({
             userId,
             videoId,
+            likes: 1,
         });
 
-        const saveLike = await newLike.save();
+        const savedLike = await newLike.save();
         return res.status(200).json({
             status: "Success!",
-            message: "Sucessfully liked video"
+            message: "Sucessfully liked video",
+            likes: savedLike.likes,
         });
 
     } catch (error) {
@@ -43,16 +56,16 @@ export const likeVideo = async (req, res) => {
 
 export const unlikeVideo = async (req, res) => {
     try {
-        const likeId = req.params.likeId
+        const videoId = req.params.videoId
 
-        if (!likeId) {
+        if (!videoId) {
             return res.status(404).json({
                 status: "FAILED",
                 message: "Not found"
             });
         }
 
-        await Likes.findByIdAndDelete({likeId});
+        await Likes.findByIdAndDelete(videoId);
 
         return res.status(200).json({
             status: "SUCCESS",
