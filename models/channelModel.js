@@ -4,7 +4,7 @@ const channelModelShema = new mongoose.Schema({
     name: String,
     description: String,
     subcribers: Number,
-    creatorId: String,
+    creatorId: {type: String, ref: 'User'},
     createdAt: Date,
 });
 
