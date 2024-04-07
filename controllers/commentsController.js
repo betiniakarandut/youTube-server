@@ -39,7 +39,7 @@ export const comment = async (req, res) => {
         return res.status(500).json({
             status: "FAILED",
             message: "Oops! Something went wrong. Refresh the page"
-        })
+        });
     }
 }
 
@@ -62,7 +62,7 @@ export const updateComment = async (req, res) => {
             return res.status(403).json({
                 status: "FAILED",
                 message: "User is not authorized to update this comment!"
-            })
+            });
         }
 
         existingComment.text = req.body.text;
@@ -74,7 +74,7 @@ export const updateComment = async (req, res) => {
             status: "SUCCESS!",
             message: "Comment is updated Successfully",
             text: existingComment.text
-        })
+        });
     
     } catch (error) {
         console.log(error);
@@ -96,7 +96,7 @@ export const deleteComment = async (req, res) => {
             return res.status(400).json({
                 status: "FAILED",
                 message: "Comment was not found or user is not authorized to delete comment"
-            })
+            });
         }
 
         console.log("Deleted Successfully");

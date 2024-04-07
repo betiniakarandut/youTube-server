@@ -8,7 +8,7 @@ export const channel = async (req, res) => {
             return res.status(403).json({
                 status: "FAILED",
                 message: "Unauthorized or user does not exist"
-            })
+            });
         }
 
         const videoLists = new Video({
