@@ -26,7 +26,6 @@ export const channel = async (req, res) => {
         const newChannel = new Channel({
             name: name,
             description: description,
-            subcribers,
             createdAt: Date.now()
         });
         const savedChannel = await newChannel.save();
@@ -37,8 +36,7 @@ export const channel = async (req, res) => {
             });
         }
 
-        const userVideoList = await Video.findById({_id: creatorId});
-        const savedUserVideoList = await userVideoList.save();
+        const userVideoList = await Video.findById({_id: userId});
 
         if (!userVideoList) {
             return res.status(401).json({
@@ -47,22 +45,17 @@ export const channel = async (req, res) => {
                 videos: [],
             });
         }
-        else if (!savedUserVideoList) {
-            return res.status(401).json({
-                status: "FAILED",
-                message: "Oops! Something went wrong. Refresh and try again"
-            });
-        }
-
+        
         return res.status(200).json({
             status: "SUCCESS",
             message: `Channel was created for ${userId.name} and your channel name is ${name}`,
+            channelId: savedChannel._id,
             subcribers: savedChannel.subcribers,
             createdAt: savedChannelChannel.createdAt,
             videos: [{
-                title: savedUserVideoList.title, 
-                path: savedUserVideoList.filePath, 
-                createdAt: savedUserVideoList.createdAt,
+                title: userVideoList.title, 
+                path: userVideoList.filePath, 
+                createdAt: userVideoList.createdAt,
             }] 
 
         });
@@ -88,7 +81,7 @@ export const deleteChannel = async (req, res) => {
             });
         }
 
-        const findChannelById = await Channel.findOneAndDelete({_id: creatorId});
+        const findChannelById = await Channel.findOneAndDelete({_id: channelId});
         if (!findChannelById) {
             return res.status(404).json({
                 status:"FAILED",
@@ -130,13 +123,19 @@ export const updateChannel = async (req, res) => {
                 message: "Not found: No existing channel"
             })
         }
-
-        req.body.name = req.body;
-        req.body.description = request.body;
+        // prompt user to tell what actin in the channel
+        const askUser = prompt('Do you want to update channel name?  ').toLowerCase;
+        if (askUser === 'yes') {
+            req.body.name = req.body;
+        } else if (askUser === 'no') {
+            req.body.description = request.body;
+        }
 
         return res.status(200).json({
             status: "SUCCESS",
-            message: "Your channel was updated successfully"
+            message: "Your channel was updated successfully",
+            name: req.body.name,
+            description: req.body.description
         })
     } catch (error) {
         console.log(error);
