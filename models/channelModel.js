@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-// import { v4 as uuidv4 } from "uuid"
 
 const channelModelShema = new mongoose.Schema({
     name: String,
@@ -10,12 +9,6 @@ const channelModelShema = new mongoose.Schema({
     createdAt: Date,
 });
 
-// channelModelShema.pre('save', function generateId(next){
-//     if(!this.channel) {
-//         this.channelId = uuidv4();
-//     }
-//     next();
-// });
 const Channel = mongoose.model("Channel", channelModelShema);
 
 export default Channel;
