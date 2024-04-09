@@ -1,4 +1,3 @@
-import { CustomerProfilesEntityAssignmentsContextImpl } from "twilio/lib/rest/trusthub/v1/customerProfiles/customerProfilesEntityAssignments.js";
 import Comments from "../models/commentsModel.js";
 
 export const comment = async (req, res) => {
