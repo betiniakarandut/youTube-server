@@ -234,3 +234,50 @@ export const unlikeComment = async (req, res) => {
         });
     }
 }
+
+export const subComments = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const commentId = req.params.commentId;
+        const { text } = req.body;
+
+        if (!userId) {
+            return res.status(403).json({
+                status: "FAILED",
+                message: "Unauthorized"
+            });
+        }
+
+        existingComment = await Comments.findById(commentId);
+
+        if(!existingComment) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "Comment was not found"
+            });
+        }
+
+        const newComment = new Comments({
+            text: text,
+            userId: userId,
+            createdAt: Date.now(),
+        });
+
+        existingComment.subComments.push(newComment);
+
+        const savedNewComment = await existingComment.save();
+
+        return res.status(200).json({
+            status: "SUCCESS",
+            message: "Subcomment is successful",
+            subcomment: savedNewComment,
+        });
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            status: "FAILED",
+            message: "Internal server error"
+        });
+    }
+}
