@@ -7,6 +7,7 @@ import {
     likeComment,
     unlikeComment,
     subComments,
+    deleteSubComment,
 } from "../controllers/commentsController.js";
 
 const commentRoute = express.Router();
@@ -17,5 +18,6 @@ commentRoute.delete('/:commentId/delete', middlewareAuth, deleteComment);
 commentRoute.post('/:commentId/like', middlewareAuth, likeComment);
 commentRoute.delete('/:commentId/dislike', middlewareAuth, unlikeComment);
 commentRoute.post('/:commentId/subcomments', middlewareAuth, subComments);
+commentRoute.delete('/subcomments/:subcommentId/delete', middlewareAuth, deleteSubComment);
 
 export default commentRoute;
