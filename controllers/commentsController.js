@@ -89,6 +89,12 @@ export const deleteComment = async (req, res) => {
     try {
         const commentId= req.params.commentId;
         const userId = req.user._id;
+        if (!userId) {
+            return res.status(403).json({
+                status: "FAILED",
+                message: "Unauthorized"
+            });
+        }
 
         const deletedComment = await Comments.findOneAndDelete({_id: commentId, userId});
 
@@ -248,7 +254,7 @@ export const subComments = async (req, res) => {
             });
         }
 
-        existingComment = await Comments.findById(commentId);
+        const existingComment = await Comments.findById(commentId);
 
         if(!existingComment) {
             return res.status(404).json({
@@ -273,6 +279,42 @@ export const subComments = async (req, res) => {
             subcomment: savedNewComment,
         });
         
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            status: "FAILED",
+            message: "Internal server error"
+        });
+    }
+}
+
+export const deleteSubComment = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const subCommentId = req.params.subcommentId;
+        console.log(subCommentId )
+
+        if(!userId){
+            return res.status(403).json({
+                status: "FAILED",
+                message: "UnasubComments.userId.uthorized"
+            });
+        }
+        
+        const delSubcomm = await Comments.findByIdAndDelete(subCommentId);
+        console.log(delSubcomm)
+        if(delSubcomm.userId.toString() !== userId) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "Comment not found"
+            });
+        }
+
+        return res.status(200).json({
+            status: "SUCCESS",
+            message: "Sub comment deleted",
+            del: delSubcomm
+        });
     } catch (error) {
         console.log(error);
         return res.status(500).json({
