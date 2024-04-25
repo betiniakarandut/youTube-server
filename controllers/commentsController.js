@@ -299,9 +299,9 @@ export const deleteSubComment = async (req, res) => {
             });
         }
         
-        const comment = await Comments.findByIdAndUpdate(
-            {"subComments._id": subCommentId},
-            {$pull: {subComments: {_Id: subCommentId}}},
+        const comment = await Comments.findOneAndUpdate(
+            {'subComments._id': subCommentId, 'subComments.userId': userId},
+            {$unset: {subComments: {_Id: subCommentId}}},
             {new: true},
         );
 
@@ -311,10 +311,12 @@ export const deleteSubComment = async (req, res) => {
                 message: "comment was not found"
             });
         }
+        await comment.save();
+
         return res.status(200).json({
             status: "SUCCESS",
             message: "Sub comment deleted",
-            del: comment
+            del: comment,
         });
     } catch (error) {
         console.log(error);
@@ -328,7 +330,7 @@ export const deleteSubComment = async (req, res) => {
 export const likeSubComment = async (req, res) => {
     try {
         const userId = req.user._id;
-        const subCommentId = req.params.subCommentId;
+        const subCommentId = req.params.subcommentId;
 
         if(!userId) {
             return res.status(403).json({
@@ -337,7 +339,7 @@ export const likeSubComment = async (req, res) => {
             });
         }
 
-        const existingLike = await Comments.findById({"subComment._id": subCommentId});
+        const existingLike = await Comments.findById({"subComment._id": subCommentId, 'subComments.userId': userId});
         if(existingLike.likes.includes(userId)) {
             return res.status(403).json({
                 status: "FAILED",
@@ -346,10 +348,12 @@ export const likeSubComment = async (req, res) => {
         }
 
         existingLike.likes.push(userId);
+        await existingLike.save();
         
         return res.status(200).json({
             status: "SUCCESS",
-            message: "You liked this comment"
+            message: "You liked this comment",
+            likes: existingLike.likes.length
         });
         
     } catch (error) {
