@@ -8,9 +8,10 @@ const commentsSchema = new mongoose.Schema({
         text: String,
         userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
         createdAt: {type: Date, default: Date.now()},
+        likes: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
     }],
-    likes: {type: Array, default: 0},
-    dislikes: {type: Array, default: 0},
+    likes: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    dislikes: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
     createdAt: Date,
 });
 
