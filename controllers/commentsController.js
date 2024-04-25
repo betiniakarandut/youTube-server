@@ -146,7 +146,7 @@ export const likeComment = async (req, res) => {
         }
 
         //check whether user has already liked the comment
-        if (existingComment.likes.includes(userId, 1)) {
+        if (existingComment.likes.includes(userId)) {
             return res.status(403).json({
                 status: "FAILED",
                 message: "User already reacted to this comment"
@@ -163,7 +163,6 @@ export const likeComment = async (req, res) => {
 
 
         // otherwise give a like by incrementing the existing likes to comment
-        existingComment.likes += 1;
         existingComment.likes.push(userId);
 
         await existingComment.save();
@@ -171,7 +170,7 @@ export const likeComment = async (req, res) => {
         return res.status(200).json({
             status: "SUCCESS",
             message: "You Liked this comment",
-            likes: existingComment.likes.length,
+            likes: existingComment.likes,
         });
     } catch (error) {
         console.log(error);
@@ -221,7 +220,6 @@ export const unlikeComment = async (req, res) => {
             })
         }
         //else user should unlike comment
-        existingComment.dislikes += 1;
         existingComment.dislikes.push(userId);
         await existingComment.save();
 
@@ -292,28 +290,31 @@ export const deleteSubComment = async (req, res) => {
     try {
         const userId = req.user._id;
         const subCommentId = req.params.subcommentId;
-        console.log(subCommentId )
+        // console.log(subCommentId )
 
         if(!userId){
             return res.status(403).json({
                 status: "FAILED",
-                message: "UnasubComments.userId.uthorized"
+                message: "Unauthorized"
             });
         }
         
-        const delSubcomm = await Comments.findByIdAndDelete(subCommentId);
-        console.log(delSubcomm)
-        if(delSubcomm.userId.toString() !== userId) {
+        const comment = await Comments.findByIdAndUpdate(
+            {"subComments._id": subCommentId},
+            {$pull: {subComments: {_Id: subCommentId}}},
+            {new: true},
+        );
+
+        if (!comment) {
             return res.status(404).json({
                 status: "FAILED",
-                message: "Comment not found"
+                message: "comment was not found"
             });
         }
-
         return res.status(200).json({
             status: "SUCCESS",
             message: "Sub comment deleted",
-            del: delSubcomm
+            del: comment
         });
     } catch (error) {
         console.log(error);
@@ -321,5 +322,77 @@ export const deleteSubComment = async (req, res) => {
             status: "FAILED",
             message: "Internal server error"
         });
+    }
+}
+
+export const likeSubComment = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const subCommentId = req.params.subCommentId;
+
+        if(!userId) {
+            return res.status(403).json({
+                status:"FAILED",
+                message: "Unauthorized"
+            });
+        }
+
+        const existingLike = await Comments.findById({"subComment._id": subCommentId});
+        if(existingLike.likes.includes(userId)) {
+            return res.status(403).json({
+                status: "FAILED",
+                message: "User already liked comment"
+            });
+        }
+
+        existingLike.likes.push(userId);
+        
+        return res.status(200).json({
+            status: "SUCCESS",
+            message: "You liked this comment"
+        });
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            status: "FAILED",
+            message: "Internal server error"
+        })
+    }
+}
+
+export const unLikeSubComment = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const subCommentId = req.params.subCommentId;
+
+        if (!userId) {
+            return res.status(403).json({
+                status: "FAILED",
+                message: "Unauthorized"
+            });
+        }
+
+        const existingLike = await Comments.findById({"subComment_id": subCommentId});
+
+        if(!existingLike.likes.includes(userId)){
+            return res.status(403).json({
+                status: "FAILED",
+                message: "No existing likes by user"
+            });
+        }
+
+        existingLike.likes.pull(userId);
+        return res.status(200).json({
+            status: "SUCCESS",
+            message: "User successfully unlike comment"
+        });
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            status: "FAILED",
+            message: "Internal server error"
+        })
     }
 }
