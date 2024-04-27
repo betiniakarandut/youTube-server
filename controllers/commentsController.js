@@ -339,21 +339,31 @@ export const likeSubComment = async (req, res) => {
             });
         }
 
-        const existingLike = await Comments.findById({"subComment._id": subCommentId, 'subComments.userId': userId});
-        if(existingLike.likes.includes(userId)) {
+        console.log(userId);
+        console.log(subCommentId);
+        const comment = await Comments.findOne(
+           {'subComments._id': subCommentId}
+        );
+
+        console.log(comment);
+
+        const subcomment = comment.subComments.find(sub => sub._id.equals(subCommentId));
+        console.log("this is subcomment:",subcomment);
+        if (subcomment.likes.includes(userId)) {
             return res.status(403).json({
                 status: "FAILED",
                 message: "User already liked comment"
             });
         }
 
-        existingLike.likes.push(userId);
-        await existingLike.save();
+        subcomment.likes.push(userId);
+
+        await comment.save();
         
         return res.status(200).json({
             status: "SUCCESS",
             message: "You liked this comment",
-            likes: existingLike.likes.length
+            likes: subcomment.likes.length
         });
         
     } catch (error) {
@@ -368,7 +378,7 @@ export const likeSubComment = async (req, res) => {
 export const unLikeSubComment = async (req, res) => {
     try {
         const userId = req.user._id;
-        const subCommentId = req.params.subCommentId;
+        const subCommentId = req.params.subcommentId;
 
         if (!userId) {
             return res.status(403).json({
@@ -377,26 +387,35 @@ export const unLikeSubComment = async (req, res) => {
             });
         }
 
-        const existingLike = await Comments.findById({"subComment_id": subCommentId});
+        const comment = await Comments.findOne(
+            {
+                "subComments._id": subCommentId
+            }
+        );
 
-        if(!existingLike.likes.includes(userId)){
+        const subcomment = comment.subComments.find(subId => subId._id.equals(subCommentId));
+        console.log(subcomment)
+        if(!subcomment.likes.includes(userId)) {
             return res.status(403).json({
                 status: "FAILED",
-                message: "No existing likes by user"
+                message: "User has not liked comment before"
             });
         }
 
-        existingLike.likes.pull(userId);
+        subcomment.likes.pop(userId);
+        await comment.save()
+
         return res.status(200).json({
             status: "SUCCESS",
-            message: "User successfully unlike comment"
+            message: "You unliked this video",
+            likes: subcomment.likes.length
         });
         
     } catch (error) {
         console.log(error);
         return res.status(500).json({
             status: "FAILED",
-            message: "Internal server error"
-        })
+            message: "Internal server error",
+        });
     }
 }
