@@ -1,4 +1,36 @@
 import Video from "../models/videoModel.js";
+import HLSServer from "hls-server";
+import path from "path";
+
+export const playBackVideo = async (req, res) => {
+    try {
+        const videoId = req.params.videoId;
+
+        const video = await Video.findById({_id: videoId});
+        if(!video){
+            return res.status(404).json({
+                status: "FAILED",
+                message: "Video not found"
+            });
+        }
+        
+        const videoPath = path.join(__dirname, '..', 'videos', video.filename);
+        
+        return res.status(200).json({
+            status: "SUCCESS",
+            message: "Video playback"
+        });
+        res.set('Content-Type', 'Application/vnd.apple.mpegurl');
+        res.sendFile(videoPath);
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            status: "FAILED",
+            message: "Internal server error"
+        });
+    }
+}
 
 export const retrieveVideo = async (req, res) => {
     try {
@@ -47,18 +79,6 @@ export const searchVideos = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(200).json({
-            status: "FAILED",
-            message: "Internal server error"
-        });
-    }
-}
-
-export const playBackVideo = async (req, res) => {
-    try {
-        
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({
             status: "FAILED",
             message: "Internal server error"
         });
