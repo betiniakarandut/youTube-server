@@ -9,7 +9,6 @@ import likeRoute from "./routes/likeRoute.js";
 import channelRoute from "./routes/channelRoutes.js";
 import viewsRoute from "./routes/viewsRoutes.js";
 import searchRoute from "./routes/searchAndPlayBackRoute.js";
-import paginationRoute from "./routes/videoPaginationRoute.js";
 
 const app = express();
 
@@ -34,7 +33,6 @@ app.use('/likes', likeRoute);
 app.use('/channel', channelRoute);
 app.use('/views', viewsRoute);
 app.use('/search', searchRoute);
-app.use('/pagination', paginationRoute);
 
 mongoose.connect(dbConnStr, { useNewUrlParser: true })
 .then( () => {
