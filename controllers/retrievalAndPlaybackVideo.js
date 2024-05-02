@@ -1,10 +1,17 @@
 import Video from "../models/videoModel.js";
-import HLSServer from "hls-server";
 import path from "path";
+
 
 export const playBackVideo = async (req, res) => {
     try {
         const videoId = req.params.videoId;
+
+        if (!videoId) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "No video Id"
+            });
+        }
 
         const video = await Video.findById({_id: videoId});
         if(!video){
@@ -14,14 +21,13 @@ export const playBackVideo = async (req, res) => {
             });
         }
         
-        const videoPath = path.join(__dirname, '..', 'videos', video.filename);
-        
-        return res.status(200).json({
+        const videoPlaybackLink = video.playback;
+
+        res.status(200).json({
             status: "SUCCESS",
-            message: "Video playback"
-        });
-        res.set('Content-Type', 'Application/vnd.apple.mpegurl');
-        res.sendFile(videoPath);
+            message: "Video playback successful",
+            videoPlaybackLink
+        })
 
     } catch (error) {
         console.log(error);
