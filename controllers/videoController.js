@@ -1,4 +1,15 @@
 import Video from "../models/videoModel.js";
+import {v2 as cloudinary} from 'cloudinary';
+import dotenv from "dotenv";
+
+dotenv.config()
+
+cloudinary.config({ 
+  cloud_name: process.env.CLOUD_NAME, 
+  api_key: process.env.API_KEY, 
+  api_secret: process.env.API_SECRET,
+});
+
 
 
 export const videoUpload = async (req, res) => {
@@ -28,10 +39,24 @@ export const videoUpload = async (req, res) => {
             })
         }
 
+        const file = req.files['file'][0];
+        if (!file) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "File not found"
+            })
+        }
+
+        const result1 = await cloudinary.uploader.upload(file.path, { resource_type: "auto" });
+        console.log(result1)
+        // const result2 = await cloudinary.uploader.upload(file2.path, { resource_type: "auto" });
+
         const newVideo = new Video ({
             title: title,
             description: description,
             creatorId: userId,
+            filePath: result1.secure_url,
+            playback: result1.playback_url,
             createdAt: Video.createdAt,
         })
 
@@ -41,9 +66,7 @@ export const videoUpload = async (req, res) => {
          res.status(201).json({
             status: "Created!",
             message: "Video was uploaded successfully",
-            video: savedVideo.filePath,
-            videoId: savedVideo._id,
-            Time: savedVideo.createdAt,
+            video: savedVideo,
          });
         
     } catch (error) {
