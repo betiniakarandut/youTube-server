@@ -33,21 +33,34 @@ export const userDashboard = async (req, res) => {
         }
 
         // Get only video IDs
-        videos = videos.map(video => video._id);
+       const videoIds = videos.map(video => video._id);
+        console.log(videos);
+        console.log(req.user.username);
 
         // Update user's profile to include the uploaded videos
-        const userDashboard = await Dashboard.findOneAndUpdate(
+        const myDashboard = await Dashboard.findOneAndUpdate(
             { userId: userId },
-            {username: req.user.username},
-            { $push: { videos: { $each: videos } } },
-            { new: true, upsert: true }
+            {
+                $set: {username: req.user.username}, 
+                $addToSet: {videos: { $each: videoIds } },
+            },
+            { new: true, upsert: true}
         );
+
+        console.log(myDashboard);
+
+        // if (myDashboard.videos.includes(videos._id)) {
+        //     return res.status(400).json({
+        //         status: "FAILED",
+        //         message: "Already in the list",
+        //     });
+        // }
 
         return res.status(200).json({
             status: "SUCCESS",
             message: "User Dashboard created",
-            userProfile: userDashboard,
-            numberOfVideos: userProfile.videos.length,
+            myDashboard: myDashboard,
+            numberOfVideos: myDashboard.videos.length,
             profileImage: req.file.path,
         });
         
