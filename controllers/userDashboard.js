@@ -1,4 +1,4 @@
-import Profile from "../models/userProfileModel.js";
+import Dashboard from "../models/userDashboardModel.js";
 import Video from "../models/videoModel.js";
 import {v2 as cloudinary} from "cloudinary";
 import dotenv from "dotenv";
@@ -36,7 +36,7 @@ export const userDashboard = async (req, res) => {
         videos = videos.map(video => video._id);
 
         // Update user's profile to include the uploaded videos
-        const userProfile = await Profile.findOneAndUpdate(
+        const userDashboard = await Dashboard.findOneAndUpdate(
             { userId: userId },
             {username: req.user.username},
             { $push: { videos: { $each: videos } } },
@@ -46,7 +46,7 @@ export const userDashboard = async (req, res) => {
         return res.status(200).json({
             status: "SUCCESS",
             message: "User Dashboard created",
-            userProfile: userProfile,
+            userProfile: userDashboard,
             numberOfVideos: userProfile.videos.length,
             profileImage: req.file.path,
         });
