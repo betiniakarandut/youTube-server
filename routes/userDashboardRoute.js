@@ -16,6 +16,6 @@ const upload = multer({storage: storage});
 
 const dashboardRoute = express.Router();
 
-dashboardRoute.post('/dashboard', upload.single('file'), middlewareAuth, userDashboard);
+dashboardRoute.post('/', upload.single('file'), middlewareAuth, userDashboard);
 
 export default dashboardRoute;
