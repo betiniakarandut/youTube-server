@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const likesSchema = new mongoose.Schema({
     userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-    videoId: {type: String, ref: 'Video'},
-    likes: {type: Number, default: 0},
+    videoId: {type: mongoose.Schema.Types.ObjectId, ref: 'Video'},
+    likes: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
 });
 
 const Likes = mongoose.model("Likes", likesSchema);

@@ -50,11 +50,13 @@ export const videoUpload = async (req, res) => {
         const result1 = await cloudinary.uploader.upload(file.path, { resource_type: "auto" });
         console.log(result1)
         // const result2 = await cloudinary.uploader.upload(file2.path, { resource_type: "auto" });
+        const likes = await Video.likes.length
 
         const newVideo = new Video ({
             title: title,
             description: description,
             creatorId: userId,
+            likes: likes,
             filePath: result1.secure_url,
             playback: result1.playback_url,
             createdAt: Video.createdAt,
