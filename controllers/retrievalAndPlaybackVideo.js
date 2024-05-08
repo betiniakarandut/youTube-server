@@ -1,5 +1,4 @@
 import Video from "../models/videoModel.js";
-import path from "path";
 
 
 export const playBackVideo = async (req, res) => {
@@ -85,6 +84,54 @@ export const searchVideos = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(200).json({
+            status: "FAILED",
+            message: "Internal server error"
+        });
+    }
+}
+
+export const getWatchedVideos = async (req, res) => {
+    try {
+        const user = req.user;
+        const userId = req.user._id;
+
+        // console.log(userId)
+
+        if(!userId) {
+            return res.status(403).json({
+                status: "FAILED",
+                message: "Unauthorized"
+            });
+        }
+
+        const watchedVideos = await Video.find({creatorId: userId})
+            .sort({views: -1, likes: -1,})
+            .limit(10)
+
+        if(watchedVideos.length === 0){
+            console.log("Failed");
+            res.status(404).json({
+                status: "FAILED",
+                message: "Not found",
+            });
+        }
+        
+
+        watchedVideos.forEach(video => {
+            user.watchedVideos.push(video._id)
+        });
+
+        await user.save();
+        
+        console.log(watchedVideos);
+        return res.status(200).json({
+            status: "SUCCESS",
+            message: "Your watched video list",
+            watchedVideos,
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
             status: "FAILED",
             message: "Internal server error"
         });

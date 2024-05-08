@@ -5,7 +5,7 @@ const userDashboardSchema = new mongoose.Schema({
     userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     username: String,
     profileImage: String,
-    videos: [{type: mongoose.Schema.Types.ObjectId, ref: 'Video', unique: true}] 
+    videos: [{type: mongoose.Schema.Types.ObjectId, ref: 'Video', unique: true}],
 });
 
 const Dashboard = mongoose.model('Dashboard', userDashboardSchema);

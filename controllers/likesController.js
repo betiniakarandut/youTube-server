@@ -4,7 +4,7 @@ import Video from "../models/videoModel.js";
 export const likeVideo = async (req, res) => {
     try {
         const videoId = req.params.videoId;
-        console.log(`This is video Id of likes controller: ${videoId}`);
+        // console.log(`This is video Id of likes controller: ${videoId}`);
         const userId = req.user._id;
 
         // does video Id exists?
@@ -22,26 +22,24 @@ export const likeVideo = async (req, res) => {
                 message: "Unauthenticated! You must sign in or sign up."
             });
         }
-        
-        const existingLike = await Likes.findOne({userId, videoId});
-        if (existingLike) {
+
+        if(existingVideo.likes.includes(userId)) {
             return res.status(200).json({
                 status: "SUCCESS",
-                message: "You already liked this video"
+                message: "User already liked video"
             })
         }
 
-        const newLike = new Likes ({
-            userId,
-            videoId,
-            likes: 1,
-        });
+        console.log("Is working")
 
-        const savedLike = await newLike.save();
+        existingVideo.likes.push(userId);
+        existingVideo.likesCount += 1;
+        await existingVideo.save();
+
         return res.status(200).json({
             status: "Success!",
             message: "Sucessfully liked video",
-            likes: savedLike.likes,
+            likes: existingVideo.likesCount,
         });
 
     } catch (error) {
@@ -56,26 +54,50 @@ export const likeVideo = async (req, res) => {
 
 export const unlikeVideo = async (req, res) => {
     try {
-        const videoId = req.params.videoId
+        const videoId = req.params.videoId;
+        // console.log(`This is video Id of likes controller: ${videoId}`);
+        const userId = req.user._id;
 
-        if (!videoId) {
+        // does video Id exists?
+        const existingVideo = await Video.findById(videoId);
+        if (!existingVideo) {
             return res.status(404).json({
                 status: "FAILED",
-                message: "Not found"
+                message: "Video not found"
             });
         }
 
-        await Likes.findByIdAndDelete(videoId);
+        if (!userId) {
+            return res.status(403).json({
+                status: "FAILED",
+                message: "Unauthenticated! You must sign in or sign up."
+            });
+        }
+
+        if(!existingVideo.likes.includes(userId)) {
+            return res.status(200).json({
+                status: "SUCCESS",
+                message: "User has not liked video"
+            })
+        }
+
+        console.log("Is working")
+
+        existingVideo.likes.pop(userId);
+        existingVideo.likesCount -= 1;
+        await existingVideo.save();
 
         return res.status(200).json({
-            status: "SUCCESS",
-            message: "You successfully unlike this video"
+            status: "Success!",
+            message: "Sucessfully unliked video",
+            likes: existingVideo.likesCount,
         });
+
     } catch (error) {
-        console.log(error)
+        console.log(error);
         return res.status(500).json({
             status: "FAILED",
-            message: "Oop! Something went wrong. Try again!!"
+            message: `Internal server error ${error}`
         });
     }
 }
