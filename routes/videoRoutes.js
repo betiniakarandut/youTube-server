@@ -3,8 +3,8 @@ import multer from "multer";
 import { middlewareAuth } from "../middlewares/userAuth.js";
 import { videoUpload } from "../controllers/videoController.js";
 import { pagination } from "../controllers/videoPagination.js";
-import { playBackVideo } from "../controllers/retrievalAndPlaybackVideo.js";
-import { getTrendingVideos } from "../controllers/trendingVideos.js";
+import { getWatchedVideos, playBackVideo } from "../controllers/retrievalAndPlaybackVideo.js";
+import { getRecommendedVideos, getTrendingVideos } from "../controllers/trendingVideos.js";
 
 const videoRoute = express.Router();
 
@@ -23,5 +23,7 @@ videoRoute.post('/upload', upload.fields([{name:'file', maxCount: 1 }]), middlew
 videoRoute.get('/pagination', pagination);
 videoRoute.get('/playback/:videoId', playBackVideo)
 videoRoute.get('/trending', getTrendingVideos);
+videoRoute.get('/recommended', getRecommendedVideos);
+videoRoute.get('/watched', middlewareAuth, getWatchedVideos);
 
 export default videoRoute;
