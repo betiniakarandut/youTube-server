@@ -6,6 +6,7 @@ const videoModelSchema = new mongoose.Schema({
     filePath: String,
     playback: String,
     creatorId: String,
+    category: String,
     comments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Comments'}],
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     createdAt: { type: Date, default: Date.now() },
