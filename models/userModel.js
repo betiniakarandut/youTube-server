@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
         country: String,
         postalcode: String,
     },
-    watchedVideos: [{type: mongoose.Schema.Types.ObjectId, ref: 'Video'}],
+    watchedVideos: [],
 })
 
 const User = mongoose.model('User', userSchema)
