@@ -23,7 +23,7 @@ videoRoute.post('/upload', upload.fields([{name:'file', maxCount: 1 }]), middlew
 videoRoute.get('/pagination', pagination);
 videoRoute.get('/playback/:videoId', playBackVideo)
 videoRoute.get('/trending', getTrendingVideos);
-videoRoute.get('/recommended', getRecommendedVideos);
 videoRoute.get('/watched', middlewareAuth, getWatchedVideos);
+videoRoute.get('/recommended', middlewareAuth, getRecommendedVideos);
 
 export default videoRoute;
