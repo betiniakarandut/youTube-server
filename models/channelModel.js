@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 const channelModelShema = new mongoose.Schema({
     name: String,
     description: String,
-    subcribers: Number,
-    channelId: {type: String, unique: true,},
+    subcribersCount: {type: Number, default: 0},
+    subscribers: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     creatorId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     createdAt: Date,
 });
