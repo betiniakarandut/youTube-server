@@ -118,7 +118,7 @@ export const getWatchedVideos = async (req, res) => {
         
 
         watchedVideos.forEach(video => {
-            user.watchedVideos.push(video._id)
+            user.watchedVideos.push(video)
         });
 
         await user.save();
