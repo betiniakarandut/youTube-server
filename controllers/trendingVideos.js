@@ -29,13 +29,27 @@ export const getTrendingVideos = async (req, res) => {
 
 export const getRecommendedVideos = async (req, res) => {
     try {
-        const user = req.user;
         const userId = req.user._id;
-        
-        const userInterest = getUserInterest(user);
+        const user = req.user;
+        const interest = [];
 
+        console.log(user.watchedVideos);
+        user.watchedVideos.forEach(video => {
+             interest.push(video.category);       
+        });
+
+
+        if(!userId) {
+            return res.status(403).json({
+                status: "FAILED",
+                message: "Unauthorized",
+            });
+        }
+
+        console.log('this is interest:', interest)
+        
         const recommendedVideos = await Video.find(
-            {category: {$in: userInterest}}
+            {category: {$in: interest}}
         ).limit(10);
 
         if (recommendedVideos.length === 0) {
@@ -57,20 +71,5 @@ export const getRecommendedVideos = async (req, res) => {
             status: "FAILED",
             message: "Internal server error"
         });
-    }
-}
-
-const getUserInterest = (user) => {
-    try {
-        const interest = [];
-
-        user.watchedVideos.forEach(video => {
-             interest.push(video.category);       
-        });
-
-        return interest;
-    } catch (error) {
-        console.log(error);
-        return "Internal server error"
     }
 }
