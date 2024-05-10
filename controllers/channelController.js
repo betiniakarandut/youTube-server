@@ -1,15 +1,13 @@
 import Channel from "../models/channelModel.js";
 import Video from "../models/videoModel.js";
 
-export const channel = async (req, res) => {
+export const createChannel = async (req, res) => {
     try {
         const userId = req.user._id;
         const username = req.user.username;
-        // console.log('userName:', username);
         const { name, description } = req.body;
-        const channelId = Channel.channelId;
 
-        // check if user is authenticated
+        // Check if user is authenticated
         if (!userId) {
             return res.status(403).json({
                 status: "FAILED",
@@ -17,36 +15,29 @@ export const channel = async (req, res) => {
             });
         }
 
-        //check if there is an existing channel with user Id
-        const existingChannel = await Channel.findOne(userId);
+        // Check if the user already has a channel
+        const existingChannel = await Channel.findOne({ creatorId: userId });
         if (existingChannel) {
             return res.status(400).json({
                 status: "FAILED",
                 message: "Bad request: User cannot create more than one channel"
             });
         }
-        // if user is authenticated, create a channel for that user
+
+        // If the user is authenticated, create a channel for that user
         const newChannel = new Channel({
             name,
             description,
-            userId,
-            createdAt: Date.now()
+            creatorId: userId,
+            subscribers: 0,
+            createdAt: Date.now(),
         });
         const savedChannel = await newChannel.save();
-        if (!savedChannel) {
-            return res.status(400).json({
-                status: "FAILED",
-                message: "Oops! Something went wrong. Refresh and try again"
-            });
-        }
         
         return res.status(200).json({
             status: "SUCCESS",
             message: `Channel was created for ${username} and your channel name is ${name}`,
-            channelId: savedChannel._id,
-            subcribers: savedChannel.subcribers,
-            createdAt: savedChannel.createdAt,
-            videos: [],
+            savedChannel,
         });
     } catch (error) {
         console.log(error);
@@ -130,6 +121,88 @@ export const updateChannel = async (req, res) => {
             name: retrieveChannel.name,
             description: retrieveChannel.description
         })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            status: "FAILED",
+            message: "Internal server error"
+        });
+    }
+}
+
+export const subscribeChannel = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const channelId = req.params.channelId;
+
+        // Check if the user is authenticated
+        if (!userId) {
+            return res.status(403).json({
+                status: "FAILED",
+                message: "Unauthorized"
+            });
+        }
+        
+        // Check if the user is already subscribed to this channel
+        const channel = await Channel.findById(channelId);
+        if (!channel) {
+            return res.status(404).json({
+                status: "FAILED",
+                message: "Channel not found"
+            });
+        }
+
+        if (channel.subscribers.includes(userId)) {
+            return res.status(400).json({
+                status: "FAILED",
+                message: "User already subscribed to this channel",
+            });
+        }
+
+        // Subscribe the user to the channel
+        channel.subscribers.push(userId);
+        channel.subcribersCount += 1;
+        await channel.save();
+
+        return res.status(200).json({
+            status: "SUCCESS",
+            message: "Subscribed",
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            status: "FAILED",
+            message: "Internal server error",
+        });
+    }
+}
+
+export const unSubscribeChannel = async (req, res) => {
+    try {
+        const channelId = req.params.channelId;
+        const userId = req.user._id;
+
+        if (!userId) {
+            return res.status(403).json({
+                status: "FAILED",
+                message: "Unauthorized"
+            });
+        }
+
+        const existingChannel = await Channel.findById(channelId);
+        if (!existingChannel){
+            return res.status(404).json({
+                status: "FAILED",
+                message: "Channel not found"
+            });
+        }
+
+        existingChannel.subscribers.pop(userId);
+        existingChannel.subcribersCount -= 1;
+
+        existingChannel.save();
+
     } catch (error) {
         console.log(error);
         return res.status(500).json({
