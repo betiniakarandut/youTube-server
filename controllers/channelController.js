@@ -17,6 +17,7 @@ export const createChannel = async (req, res) => {
 
         // Check if the user already has a channel
         const existingChannel = await Channel.findOne({ creatorId: userId });
+        console.log(existingChannel)
         if (existingChannel) {
             return res.status(400).json({
                 status: "FAILED",
@@ -24,15 +25,18 @@ export const createChannel = async (req, res) => {
             });
         }
 
+
         // If the user is authenticated, create a channel for that user
-        const newChannel = new Channel({
+        const channel = new Channel({
             name,
             description,
             creatorId: userId,
-            subscribers: 0,
+            subscribers: [],
+            subscribersCount: 0,
             createdAt: Date.now(),
         });
-        const savedChannel = await newChannel.save();
+
+        const savedChannel = await channel.save();
         
         return res.status(200).json({
             status: "SUCCESS",
@@ -152,6 +156,7 @@ export const subscribeChannel = async (req, res) => {
             });
         }
 
+        console.log("this is channel: ", channel)
         if (channel.subscribers.includes(userId)) {
             return res.status(400).json({
                 status: "FAILED",
@@ -167,6 +172,7 @@ export const subscribeChannel = async (req, res) => {
         return res.status(200).json({
             status: "SUCCESS",
             message: "Subscribed",
+            channel
         });
 
     } catch (error) {
@@ -202,6 +208,12 @@ export const unSubscribeChannel = async (req, res) => {
         existingChannel.subcribersCount -= 1;
 
         existingChannel.save();
+
+        return res.status(200).json({
+            status: "SUCCESS",
+            message: "Unsubscribed",
+            existingChannel,
+        })
 
     } catch (error) {
         console.log(error);
