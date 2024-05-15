@@ -84,13 +84,13 @@ export const unlikeVideo = async (req, res) => {
         console.log("Is working")
 
         existingVideo.likes.pop(userId);
-        existingVideo.likesCount -= 1;
+        existingVideo.dislikes += 1;
         await existingVideo.save();
 
         return res.status(200).json({
             status: "Success!",
             message: "Sucessfully unliked video",
-            likes: existingVideo.likesCount,
+            likes: existingVideo.dislikes,
         });
 
     } catch (error) {
