@@ -22,13 +22,17 @@ export const getVideoMetrics = async(req, res) => {
         }
 
         const countViews = isVideo.views;
-        const countLikes = isVideo.likes;
-        const countComments = isVideo.comments;
+        const countLikes = isVideo.likesCount;
+        const countDislikes = isVideo.dislikes;
+        const countComments = isVideo.commentCount;
 
         const metrics = new VideoMetrics({
             likes: countLikes,
+            dislikes: countDislikes,
             comments: countComments,
             views: countViews,
+            videoId: videoId,
+            createdAt: Date.now(),
         });
 
         const savedMetrics = await metrics.save();
@@ -52,7 +56,7 @@ export const getEngagementMetrics = async (req, res) => {
     try {
         const videoId = req.params.videoId;
         
-        const isVideo = await VideoMetrics.findOne({_id: videoId});
+        const isVideo = await VideoMetrics.findOne({videoId: videoId});
         if(!isVideo){
             return res.status(404).json({
                 status: "FAILED",
@@ -64,11 +68,13 @@ export const getEngagementMetrics = async (req, res) => {
         const totalViews = isVideo.views;
 
         const Engagementmentric = (totalEngagement/totalViews) * 100
-
+        if (Engagementmentric.toString === null){
+            return 0
+        }
         return res.status(200).json({
             status: "SUCCESS",
             message: "Video Engagements",
-            Engagementmentric
+            Engagementmentric,
         });
     } catch (error) {
         console.log(error);
