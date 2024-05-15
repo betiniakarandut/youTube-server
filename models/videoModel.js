@@ -8,11 +8,13 @@ const videoModelSchema = new mongoose.Schema({
     creatorId: String,
     category: String,
     comments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Comments'}],
+    commentCount: {type: Number, default: 0},
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     createdAt: { type: Date, default: Date.now() },
     views: { type: Number, default: 0},
+    dislikes: {type: Number, default: 0},
     likes: [{type: mongoose.Schema.Types.ObjectId, ref: 'Likes'}],
-    likesCount: {type: Number, default: 0, unique: true},
+    likesCount: {type: Number, default: 0},
 });
 
 const Video = mongoose.model("Video", videoModelSchema);

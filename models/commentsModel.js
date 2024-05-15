@@ -8,10 +8,15 @@ const commentsSchema = new mongoose.Schema({
         text: String,
         userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
         createdAt: {type: Date, default: Date.now()},
+        subcommentCount: {type: Number, default: 0},
         likes: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+        likesCount: {type: Number, default: 0},
+        dislikesCount: {type: Number, default: 0},
     }],
     likes: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    likesCount: {type: Number, default: 0},
     dislikes: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    dislikesCount: {type: Number, default: 0},
     createdAt: Date,
 });
 
