@@ -1,6 +1,9 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import i18next from 'i18next';
+import Backend from "i18next-fs-backend";
+import i18nextMiddleware from 'i18next-http-middleware';
 import { dbConnStr } from "./utils/configuration.js";
 import userRoutes from "./routes/userRoutes.js";
 import videoRoute from "./routes/videoRoutes.js";
@@ -11,21 +14,20 @@ import viewsRoute from "./routes/viewsRoutes.js";
 import searchRoute from "./routes/searchAndPlayBackRoute.js";
 import dashboardRoute from "./routes/userDashboardRoute.js";
 
-const app = express();
 
-app.use(cors())
+i18next.use(Backend).use(i18nextMiddleware.LanguageDetector)
+    .init({
+        fallbackLng: 'en',
+        backend: {
+            loadPath: './locales/{{lng}}/translation.json'
+        }
+    });
+
+const app = express();
+app.use(cors());
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-
-
-app.get('/', (req, res) => {
-    if (res.statusCode === 200) {
-        return res.status(200).json({message: "Welcome to YouTube server"});
-    }else{
-        console.log("Server is not running");
-    }
-})
 
 app.use('/user', userRoutes);
 app.use('/video', videoRoute);
@@ -35,6 +37,14 @@ app.use('/channel', channelRoute);
 app.use('/views', viewsRoute);
 app.use('/search', searchRoute);
 app.use('/dashboard', dashboardRoute);
+
+app.get('/', (req, res) => {
+    if (res.statusCode === 200) {
+        return res.status(200).json({message: "Welcome to YouTube server"});
+    }else{
+        console.log("Server is not running");
+    }
+});
 
 mongoose.connect(dbConnStr, { useNewUrlParser: true })
 .then( () => {

@@ -5,6 +5,7 @@ import { videoUpload } from "../controllers/videoController.js";
 import { pagination } from "../controllers/videoPagination.js";
 import { getWatchedVideos, playBackVideo } from "../controllers/retrievalAndPlaybackVideo.js";
 import { getRecommendedVideos, getTrendingVideos } from "../controllers/trendingVideos.js";
+import { getEngagementMetrics, getVideoMetrics } from "../controllers/videoMetricsController.js";
 
 const videoRoute = express.Router();
 
@@ -25,5 +26,7 @@ videoRoute.get('/playback/:videoId', playBackVideo)
 videoRoute.get('/trending', getTrendingVideos);
 videoRoute.get('/watched', middlewareAuth, getWatchedVideos);
 videoRoute.get('/recommended', middlewareAuth, getRecommendedVideos);
+videoRoute.get('/:videoId/analytics/metrics', middlewareAuth, getVideoMetrics);
+videoRoute.get('/:videoId/analytics/engagements', getEngagementMetrics);
 
 export default videoRoute;
