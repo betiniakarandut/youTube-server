@@ -15,7 +15,7 @@ export const comment = async (req, res) => {
             });
         }
 
-        const video = await Video.findOne(videoId);
+        const video = await Video.findOne({_id: videoId});
         if(!video){
             return res.status(404).json({
                 status: "FAILED",
@@ -24,6 +24,7 @@ export const comment = async (req, res) => {
         }
 
         video.commentCount += 1;
+        video.views += 1;
 
         const newComment = new Comments ({
             videoId,

@@ -12,6 +12,7 @@ export const getTrendingVideos = async (req, res) => {
         }).sort('views').limit(10);
 
         console.log(trendingVideos);
+        trendingVideos.views += 1;
         
         return res.status(200).json({
             status: "SUCCESS",
@@ -51,6 +52,8 @@ export const getRecommendedVideos = async (req, res) => {
         const recommendedVideos = await Video.find(
             {category: {$in: interest}}
         ).limit(10);
+
+        recommendedVideos.views += 1;
 
         if (recommendedVideos.length === 0) {
             return res.status(404).json({

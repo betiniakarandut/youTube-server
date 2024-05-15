@@ -33,6 +33,7 @@ export const likeVideo = async (req, res) => {
         console.log("Is working")
 
         existingVideo.likes.push(userId);
+        existingVideo.views += 1;
         existingVideo.likesCount += 1;
         await existingVideo.save();
 
@@ -84,6 +85,7 @@ export const unlikeVideo = async (req, res) => {
         console.log("Is working")
 
         existingVideo.likes.pop(userId);
+        existingVideo.views += 1;
         existingVideo.dislikes += 1;
         await existingVideo.save();
 
