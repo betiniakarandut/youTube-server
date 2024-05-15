@@ -1,4 +1,5 @@
 import Comments from "../models/commentsModel.js";
+import Video from "../models/videoModel.js";
 
 export const comment = async (req, res) => {
     try {
@@ -7,32 +8,38 @@ export const comment = async (req, res) => {
         const videoId = req.params.videoId;
         const { text } = req.body;
 
-        console.log("userId:", userId);
-        console.log("videoId:", videoId);
-        if (userId || videoId) {
-            const newComment = new Comments ({
-                videoId,
-                userId,
-                text,
-                createdAt: Date.now(),
-            });
-
-            const savedComment = await newComment.save();
-
-            return res.status(200).json({
-                status: "SUCCESS!",
-                message: "Comment was added successfully",
-                commentId: savedComment._id,
-                Comment: savedComment.text,
-                Time: savedComment.createdAt
-            });
-        }
-        else {
+        if(!userId){
             return res.status(403).json({
                 status: "FAILED",
-                message: "Unauthorized"
+                message: "Unauthorized",
             });
         }
+
+        const video = await Video.findOne(videoId);
+        if(!video){
+            return res.status(404).json({
+                status: "FAILED",
+                message: "comment not found"
+            });
+        }
+
+        video.commentCount += 1;
+
+        const newComment = new Comments ({
+            videoId,
+            userId,
+            text,
+            createdAt: Date.now(),
+        });
+
+        await video.save();
+        const savedComment = await newComment.save();
+
+        return res.status(200).json({
+            status: "SUCCESS!",
+            message: "Comment was added successfully",
+            savedComment,
+        });
 
     } catch (error) {
         console.log(error);
@@ -105,6 +112,18 @@ export const deleteComment = async (req, res) => {
             });
         }
 
+        const video = await Video.findOne(commentId)
+        if(!video){
+            return res.status(404).json({
+                status: "FAILED",
+                message: "comment not found"
+            });
+        }
+
+        video.commentCount -= 1;
+        await video.save();
+
+
         console.log("Deleted Successfully");
         
         return res.status(200).json({
@@ -147,8 +166,8 @@ export const likeComment = async (req, res) => {
 
         //check whether user has already liked the comment
         if (existingComment.likes.includes(userId)) {
-            return res.status(403).json({
-                status: "FAILED",
+            return res.status(200).json({
+                status: "SUCCESS",
                 message: "User already reacted to this comment"
             });
         }
@@ -160,17 +179,15 @@ export const likeComment = async (req, res) => {
                 message: "User can only Like or Dislike comment"
             })
         }
-
-
         // otherwise give a like by incrementing the existing likes to comment
         existingComment.likes.push(userId);
-
+        existingComment.likesCount += 1;
         await existingComment.save();
         
         return res.status(200).json({
             status: "SUCCESS",
             message: "You Liked this comment",
-            likes: existingComment.likes,
+            likes: existingComment.likesCount,
         });
     } catch (error) {
         console.log(error);
@@ -221,12 +238,13 @@ export const unlikeComment = async (req, res) => {
         }
         //else user should unlike comment
         existingComment.dislikes.push(userId);
+        existingComment.dislikesCount += 1;
         await existingComment.save();
 
         return res.status(200).json({
             status: "SUCCESS",
             message: "You Disliked this comment",
-            likes: existingComment.dislikes,
+            likes: existingComment.dislikesCount,
         });
 
 
@@ -268,7 +286,7 @@ export const subComments = async (req, res) => {
         });
 
         existingComment.subComments.push(newComment);
-
+        existingComment.subComments.subcommentCount += 1;
         const savedNewComment = await existingComment.save();
 
         return res.status(200).json({
@@ -305,6 +323,8 @@ export const deleteSubComment = async (req, res) => {
             {new: true},
         );
 
+        comment.subcommentCount -= 1;
+        
         if (!comment) {
             return res.status(404).json({
                 status: "FAILED",
@@ -357,6 +377,7 @@ export const likeSubComment = async (req, res) => {
         }
 
         subcomment.likes.push(userId);
+        subcomment.likesCount += 1;
 
         await comment.save();
         
@@ -403,6 +424,7 @@ export const unLikeSubComment = async (req, res) => {
         }
 
         subcomment.likes.pop(userId);
+        subcomment.dislikesCount += 1;
         await comment.save()
 
         return res.status(200).json({
