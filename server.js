@@ -3,6 +3,8 @@ import cors from "cors";
 import mongoose from "mongoose";
 import i18next from 'i18next';
 import Backend from "i18next-fs-backend";
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocs from "./api_doc.js";
 import i18nextMiddleware from 'i18next-http-middleware';
 import { dbConnStr } from "./utils/configuration.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -37,6 +39,7 @@ app.use('/channel', channelRoute);
 app.use('/views', viewsRoute);
 app.use('/search', searchRoute);
 app.use('/dashboard', dashboardRoute);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get('/', (req, res) => {
     if (res.statusCode === 200) {
