@@ -15,6 +15,7 @@ import channelRoute from "./routes/channelRoutes.js";
 import viewsRoute from "./routes/viewsRoutes.js";
 import searchRoute from "./routes/searchAndPlayBackRoute.js";
 import dashboardRoute from "./routes/userDashboardRoute.js";
+import translationRoute from "./routes/translationRoute.js";
 
 
 i18next.use(Backend).use(i18nextMiddleware.LanguageDetector)
@@ -39,6 +40,7 @@ app.use('/channel', channelRoute);
 app.use('/views', viewsRoute);
 app.use('/search', searchRoute);
 app.use('/dashboard', dashboardRoute);
+app.use('/translation', translationRoute)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get('/', (req, res) => {
