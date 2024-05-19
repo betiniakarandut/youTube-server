@@ -1,11 +1,8 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import i18next from 'i18next';
-import Backend from "i18next-fs-backend";
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocs from "./api_doc.js";
-import i18nextMiddleware from 'i18next-http-middleware';
 import { dbConnStr } from "./utils/configuration.js";
 import userRoutes from "./routes/userRoutes.js";
 import videoRoute from "./routes/videoRoutes.js";
@@ -17,14 +14,6 @@ import searchRoute from "./routes/searchAndPlayBackRoute.js";
 import dashboardRoute from "./routes/userDashboardRoute.js";
 import translationRoute from "./routes/translationRoute.js";
 
-
-i18next.use(Backend).use(i18nextMiddleware.LanguageDetector)
-    .init({
-        fallbackLng: 'en',
-        backend: {
-            loadPath: './locales/{{lng}}/translation.json'
-        }
-    });
 
 const app = express();
 app.use(cors());
