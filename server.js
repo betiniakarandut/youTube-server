@@ -34,18 +34,21 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get('/', (req, res) => {
     if (res.statusCode === 200) {
-        return res.status(200).json({message: "Welcome to YouTube server"});
+        return res.status(200).json({message: "Welcome to YouTube server\n"});
     }else{
         console.log("Server is not running");
     }
 });
 
+const port = process.env.PORT;
+console.log(port);
+
 mongoose.connect(dbConnStr, { useNewUrlParser: true })
 .then( () => {
     console.log("YouTube database is connected");
 
-    app.listen(process.env.PORT, () => {
-        console.log(`server is running on port 127.0.0.1:${process.env.PORT}`);
+    app.listen(port, () => {
+        console.log(`server is running on port 127.0.0.1:${port}`);
     })
 }
 ).catch( (err) => {
