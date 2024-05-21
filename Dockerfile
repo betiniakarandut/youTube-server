@@ -1,17 +1,14 @@
 # Use the official Node.js image from the Docker Hub
 FROM node:18
 
-# Create and set the working directory inside the container
+# Set the working directory inside the container
 WORKDIR /usr/src/app
 
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-# Copy the .env file
-COPY .env .env
-
-# Install dependencies
-RUN npm install
+# Install dependencies (both runtime and development)
+RUN npm install --only=prod
 
 # Copy the rest of your application code to the working directory
 COPY . .
@@ -20,4 +17,4 @@ COPY . .
 EXPOSE 5000
 
 # Command to run the application
-CMD ["nodemon", "server.js"]
+CMD ["npm", "run", "start"]
