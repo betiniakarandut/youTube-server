@@ -5,9 +5,9 @@ export const views = async (req, res) => {
     try {
 
         const videoId = req.params.videoId;
-        console.log(`This is req.params.videoId: ${videoId}`)
+        console.log( `This is req.params.videoId: ${videoId}`);
         const userId = req.user._id;
-        console.log(userId)
+        // console.log(userId)
 
         if (!userId) {
             return res.status(403).json({
