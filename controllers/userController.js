@@ -357,3 +357,40 @@ export const verifyOTP = async (req, res) => {
         
     }
 }
+
+export const deleteUser = async(req, res) => {
+    try {
+        const user = req.user;
+        const userId = req.user._id;
+        const deletedUserId = req.params.deletedUserId;
+
+        if (!userId && user.admin == false) {
+            return res.status(403).json({
+                status: "SUCCESS",
+                message: "user is forbidden"
+            });
+        }
+
+        if (!deletedUserId) {
+            return res.status(404).json({
+                status:"FAILED",
+                message: "user not found"
+            });
+        }
+
+        const delUser = await User.findByIdAndDelete(deletedUserId);
+
+        return res.status(200).json({
+            status: "SUCCESS",
+            message: "User was deleted successfully from database",
+            deleted: delUser,
+        });
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            status: "FAILED",
+            message: "Internal server error"
+        });
+    }
+} 
