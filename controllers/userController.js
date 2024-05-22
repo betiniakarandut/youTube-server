@@ -88,29 +88,52 @@ export const signUp = async (req, res) => {
             });
         }
 
-            const userExist = await User.findOne({ email });
-            if (userExist) {
-                return res.status(400).json({ message: "User already exists" });
-            }
+        console.log(process.env.ADMIN);
 
-            const hashed_password = await bcrypt.hash(password, 10);
+        const userExist = await User.findOne({ email });
+        if (userExist) {
+            return res.status(400).json({ message: "User already exists" });
+        }
 
+        const hashed_password = await bcrypt.hash(password, 10);
+
+        
+        if (process.env.ADMIN.includes(email)) {
             const newUser = new User({
                 email,
                 password: hashed_password,
                 username,
                 phone,
                 verified: false,
+                admin: true,
             });
-
-            const savedUser = await newUser.save();
             
+            const savedUser = await newUser.save();
+    
             await sendOTPVerificationEmailAndSMS(savedUser, res);
 
             return res.status(200).json({
                 message: "New user created successfully",
                 userDetails: savedUser
             });
+        }
+
+        const newUser = new User({
+            email,
+            password: hashed_password,
+            username,
+            phone,
+            verified: false,
+        });
+
+        const savedUser = await newUser.save();
+        
+        await sendOTPVerificationEmailAndSMS(savedUser, res);
+
+        return res.status(200).json({
+            message: "New user created successfully",
+            userDetails: savedUser
+        });
 
     } catch (err) {
         console.error("Error during signup:", err);
