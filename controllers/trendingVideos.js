@@ -1,7 +1,5 @@
-import Demographics from "../models/demographicModel.js";
 import Video from "../models/videoModel.js";
 import dotenv from "dotenv";
-import { getWatchedVideos } from "./retrievalAndPlaybackVideo.js";
 
 dotenv.config();
 
