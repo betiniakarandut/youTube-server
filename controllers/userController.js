@@ -380,6 +380,10 @@ export const deleteUser = async(req, res) => {
 
         const delUser = await User.findByIdAndDelete(deletedUserId);
 
+        if (delUser == null){
+            return res.send("user deleted already or does not exist");
+        }
+
         return res.status(200).json({
             status: "SUCCESS",
             message: "User was deleted successfully from database",
