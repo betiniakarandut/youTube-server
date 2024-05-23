@@ -127,27 +127,6 @@ export const deleteComment = async (req, res) => {
             });
         }
 
-        // const deletedComment = await Comments.findOneAndDelete({_id: commentId, userId});
-
-        // if(!deletedComment) {
-        //     return res.status(400).json({
-        //         status: "FAILED",
-        //         message: "Comment was not found or user is not authorized to delete comment"
-        //     });
-        // }
-
-        // const video = await Video.findOne(commentId)
-        // if(!video){
-        //     return res.status(404).json({
-        //         status: "FAILED",
-        //         message: "comment not found"
-        //     });
-        // }
-
-        // video.commentCount -= 1;
-        // await video.save();
-
-
     } catch (error) {
         console.log(error);
         return res.status(500).json({
