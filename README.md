@@ -8,7 +8,7 @@ This project will attempt to implement the basic features of YouTube. The aim is
 
 ## Lets Jump Right In!
 
-Welcome to the `youTube-server`! Our server provides a comprehensive solution for managing videos and all product adverts. This README provides an overview of the project, including its purpose, features, setup instructions, functionality, API documentation, contributing guidelines, and licensing information.
+Welcome to the `youTube-server`! Our server provides a comprehensive solution for managing videos and all product adverts. This README provides an overview of the project, including its purpose, features, setup instructions, functionality, API documentation, contributing guidelines, modules, and licensing information.
 
 ## Introduction
 
@@ -55,7 +55,7 @@ The Financial Platform provides a range of functionality across its modules:
 
 For detailed API documentation and usage examples, please refer to the individual module README files.
 
-## Contributing
+## Contributing and guidelines
 
 We welcome contributions from the community! If you'd like to contribute to the YouTube Server, please follow these steps:
 
@@ -65,8 +65,21 @@ We welcome contributions from the community! If you'd like to contribute to the 
 4. Test thoroughly and ensure adherence to coding standards.
 5. Submit a pull request with a clear description of your changes.
 
+## Modules
+| Folder | Description |
+|--------|-------------|
+|[controllers](./controllers/) | callback functions |
+| [models](./models/) | video and all associated models |
+| [routes](./routes/) | all videos and associated routes |
+| [server](./server.js) | consume all endpoints/APIs (entry file) |
+| [Docker image](./Dockerfile) | Docker image for the server |
+| [utils](./utils/)  | utility files |
+| [client](./client/) | Nginx Homepage |
+| [API Docs](./api_doc.js) | API documentation |
 
-# Author
+
+
+## Author
 - Github ==> [Betini Akarandut](https://github.com/betiniakarandut)
 - Tweet ==> [@betiniakarandut](https://twitter.com/betiniakarandut)
 
