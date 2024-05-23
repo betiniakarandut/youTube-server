@@ -97,6 +97,7 @@ export const deleteComment = async (req, res) => {
     try {
         const commentId= req.params.commentId;
         const userId = req.user._id;
+        const user = req.user;
         if (!userId) {
             return res.status(403).json({
                 status: "FAILED",
@@ -104,34 +105,48 @@ export const deleteComment = async (req, res) => {
             });
         }
 
-        const deletedComment = await Comments.findOneAndDelete({_id: commentId, userId});
+        if(userId || user.admin == true){
+            const deletedComment = await Comments.findByIdAndDelete(commentId);
 
-        if(!deletedComment) {
-            return res.status(400).json({
-                status: "FAILED",
-                message: "Comment was not found or user is not authorized to delete comment"
-            });
-        }
+            console.log(deletedComment);
+            if(!deletedComment == null) {
+                return res.status(404).json({
+                    status: "FAILED",
+                    message: "Comment was not found or does not exist"
+                });
+            }
 
-        const video = await Video.findOne(commentId)
-        if(!video){
-            return res.status(404).json({
-                status: "FAILED",
-                message: "comment not found"
-            });
-        }
+            Video.commentCount -= 1;
 
-        video.commentCount -= 1;
-        await video.save();
-
-
-        console.log("Deleted Successfully");
+            console.log("Deleted Successfully");
         
-        return res.status(200).json({
-            status: "Success",
-            message:"Comment was deleted successfully",
-            timeOfDelete: deletedComment.createdAt,
-        });
+            return res.status(200).json({
+                status: "Success",
+                message:"Comment was deleted successfully",
+                deletedComment: deletedComment,
+            });
+        }
+
+        // const deletedComment = await Comments.findOneAndDelete({_id: commentId, userId});
+
+        // if(!deletedComment) {
+        //     return res.status(400).json({
+        //         status: "FAILED",
+        //         message: "Comment was not found or user is not authorized to delete comment"
+        //     });
+        // }
+
+        // const video = await Video.findOne(commentId)
+        // if(!video){
+        //     return res.status(404).json({
+        //         status: "FAILED",
+        //         message: "comment not found"
+        //     });
+        // }
+
+        // video.commentCount -= 1;
+        // await video.save();
+
 
     } catch (error) {
         console.log(error);
