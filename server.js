@@ -1,8 +1,7 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import swaggerUi from 'swagger-ui-express';
-import swaggerDocs from "./api_doc.js";
+import swaggerSetup from "./swagger.js";
 import { dbConnStr } from "./utils/configuration.js";
 import userRoutes from "./routes/userRoutes.js";
 import videoRoute from "./routes/videoRoutes.js";
@@ -21,6 +20,8 @@ app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
+swaggerSetup(app);
+
 app.use('/user', userRoutes);
 app.use('/video', videoRoute);
 app.use('/comments', commentRoute);
@@ -29,8 +30,7 @@ app.use('/channel', channelRoute);
 app.use('/views', viewsRoute);
 app.use('/search', searchRoute);
 app.use('/dashboard', dashboardRoute);
-app.use('/translation', translationRoute)
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use('/translation', translationRoute);
 
 app.get('/', (req, res) => {
     if (res.statusCode === 200) {
