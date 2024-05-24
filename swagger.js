@@ -73,7 +73,7 @@ const swaggerDefinition = {
             type: 'string',
             description: 'Video description',
           },
-          filepath: {
+          file: {
             type: 'string',
             description: 'Video path',
           },
