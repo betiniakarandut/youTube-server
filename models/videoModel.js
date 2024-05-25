@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
 const videoModelSchema = new mongoose.Schema({
-    title: String,
-    description: String,
-    filePath: String,
+    title: {type: String, required: true},
+    description: {type: String, required: true},
+    filePath: {type: String, required: true},
     playback: String,
     creatorId: String,
-    category: String,
+    category: {type: String, required: true},
     comments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Comments'}],
     commentCount: {type: Number, default: 0},
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

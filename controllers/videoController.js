@@ -56,6 +56,7 @@ export const videoUpload = async (req, res) => {
             description: description,
             creatorId: userId,
             category: category,
+            likesCount: 0,
             filePath: result1.secure_url,
             playback: result1.playback_url,
             createdAt: Video.createdAt,

@@ -16,18 +16,52 @@ import { middlewareAuth } from '../middlewares/userAuth.js';
  * @swagger
  * /user/signup:
  *   post:
- *     summary: Create a new user
+ *     summary: Sign up a new user
+ *     description: User signup process.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/User'
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The username
+ *               email:
+ *                 type: string
+ *                 description: User email address
+ *               phone:
+ *                 type: number
+ *                 description: User phone number
+ *               password:
+ *                 type: string
+ *                 description: Enter at least 8 characters password
  *     responses:
  *       200:
- *         description: User created successfully
+ *         description: Successful! OTP sent
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 username:
+ *                   type: string
+ *                   description: The username
+ *                 email:
+ *                   type: string
+ *                   description: User email address
+ *                 phone:
+ *                   type: number
+ *                   description: User phone number
+ *                 password:
+ *                   type: string
+ *                   description: Enter at least 8 characters password
  *       400:
- *         description: Invalid input
+ *         description: Invalid request data
+ *       500:
+ *         description: Internal server error
  */
 userRoutes.post('/signup', signUp);
 
@@ -35,7 +69,8 @@ userRoutes.post('/signup', signUp);
  * @swagger
  * /user/signin:
  *   post:
- *     summary: sign in a user
+ *     summary: Sign in a user
+ *     description: Authenticate a user and return a JWT token
  *     requestBody:
  *       required: true
  *       content:
@@ -45,27 +80,60 @@ userRoutes.post('/signup', signUp);
  *     responses:
  *       200:
  *         description: User signed in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: JWT token
  *       400:
  *         description: Invalid input
- */
+ *       401:
+ *         description: Unauthorized
+ */  
 userRoutes.post('/signin', signIn);
 userRoutes.post('/sendotpverificationsms', sendOTPVerificationEmailAndSMS);
 /**
  * @swagger
  * /user/verifyotp:
  *   post:
- *     summary: verify a user OTP
+ *     summary: Verify user OTP
+ *     description: User must supply OTP to be verified.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/userOTPVerification'
+*           schema:
+*             type: object
+*             properties:
+*               userId:
+*                 type: string
+*                 description: The user ID
+*               otp:
+*                 type: string
+*                 description: OTP received
  *     responses:
  *       200:
- *         description: User signed in successfully
+ *         description: User verified successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 userId:
+ *                   type: string
+ *                   description: User ID
+ *                 otp:
+ *                   type: string
+ *                   description: The OTP sent to phone and email
  *       400:
- *         description: Invalid token or expired token 
+ *         description: Invalid request data
+ *       401:
+ *         description: Unauthorized - token is required
+ *       500:
+ *         description: Internal server error
  */
 userRoutes.post('/verifyotp', verifyOTP);
 userRoutes.get('/verify/:userId/:uniqueString', verify);
