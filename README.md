@@ -37,7 +37,7 @@ The `youTube-server` is designed to facilitate video live stream, video uploads,
 
 ## Functionality
 
-The Financial Platform provides a range of functionality across its modules:
+The YouTube Server provides a range of functionality across its modules:
 
 - **YouTube Server**:
 - Manage all your videos and server contents from the cloud.
@@ -52,8 +52,8 @@ The Financial Platform provides a range of functionality across its modules:
 - Support cryptocurrency transactions for real estate investments.
 
 ## API Documentation
-
-For detailed API documentation and usage examples, please refer to the individual module README files.
+Replace port with your choice. Default port is `5000`.
+visit `localhost:5000/api-docs`
 
 ## Contributing and guidelines
 
@@ -75,11 +75,11 @@ We welcome contributions from the community! If you'd like to contribute to the 
 | [Docker image](./Dockerfile) | Docker image for the server |
 | [utils](./utils/)  | utility files |
 | [client](./client/) | Nginx Homepage |
-| [API Docs](./api_doc.js) | API documentation |
+| [API Docs](./swagger.js) | API documentation |
 
 
 
 ## Author
-- Github ==> [Betini Akarandut](https://github.com/betiniakarandut)
-- Tweet ==> [@betiniakarandut](https://twitter.com/betiniakarandut)
+- Github - [Betini Akarandut](https://github.com/betiniakarandut)
+- Tweet - [@betiniakarandut](https://twitter.com/betiniakarandut)
 
