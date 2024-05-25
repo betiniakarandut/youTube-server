@@ -86,16 +86,11 @@ const swaggerDefinition = {
     },
   },
   components: {
-    schemas: {
-      Comments: {
-        type: 'object',
-        required: ['text'],
-        properties: {
-          text: {
-            type: 'string',
-            description: 'comments',
-          },
-        },
+    securitySchemes: {
+      BearerAuth: {
+        type: 'http',
+        scheme: 'bearer token',
+        bearerFormat: 'JWT',
       },
     },
   },

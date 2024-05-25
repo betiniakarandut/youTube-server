@@ -25,20 +25,60 @@ const upload = multer({storage: storage});
  * @swagger
  * /video/upload:
  *   post:
- *     summary: Verified user can upload a video
+ *     summary: Upload a new video
+ *     description: Upload a video file along with metadata.
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Video'
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: The video file to upload
+ *               title:
+ *                 type: string
+ *                 description: The title of the video
+ *               description:
+ *                 type: string
+ *                 description: The description of the video
+ *               category:
+ *                 type: string
+ *                 description: The category of the video
  *     responses:
- *       200:
+ *       201:
  *         description: Video uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 title:
+ *                   type: string
+ *                   description: The title of the uploaded video
+ *                 description:
+ *                   type: string
+ *                   description: The description of the uploaded video
+ *                 url:
+ *                   type: string
+ *                   description: The URL of the uploaded video
+ *                 uploadDate:
+ *                   type: string
+ *                   format: date-time
+ *                   description: The upload date of the video
+ *       400:
+ *         description: Invalid request data
+ *       401:
+ *         description: Unauthorized - token is required
  *       500:
  *         description: Internal server error
  */
 videoRoute.post('/upload', upload.fields([{name:'file', maxCount: 1 }]), middlewareAuth, videoUpload);
+
 /**
  * @swagger
  * /video/pagination:
