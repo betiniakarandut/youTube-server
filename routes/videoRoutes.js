@@ -93,9 +93,11 @@ videoRoute.post('/upload', upload.fields([{name:'file', maxCount: 1 }]), middlew
 videoRoute.get('/pagination', pagination);
 /**
  * @swagger
- * /video/playback/{videoId}
+ * /video/playback/{videoId}:
  * get:
  *  summary: video playback
+ *  security:
+ *    - BearerAuth: []
  *  description: Playback video of given video ID
  *  parameters:
  *    - in: path
