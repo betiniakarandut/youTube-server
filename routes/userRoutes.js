@@ -33,7 +33,7 @@ import { middlewareAuth } from '../middlewares/userAuth.js';
  *                 type: string
  *                 description: User email address
  *               phone:
- *                 type: number
+ *                 type: string
  *                 description: User phone number
  *               password:
  *                 type: string
@@ -53,7 +53,7 @@ import { middlewareAuth } from '../middlewares/userAuth.js';
  *                   type: string
  *                   description: User email address
  *                 phone:
- *                   type: number
+ *                   type: string
  *                   description: User phone number
  *                 password:
  *                   type: string
@@ -70,29 +70,55 @@ userRoutes.post('/signup', signUp);
  * /user/signin:
  *   post:
  *     summary: Sign in a user
- *     description: Authenticate a user and return a JWT token
+ *     description: User sign in process.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The username
+ *               email:
+ *                 type: string
+ *                 description: User email address
+ *               phone:
+ *                 type: string
+ *                 description: User phone number
+ *               password:
+ *                 type: string
+ *                 description: Enter at least 8 characters password
  *     responses:
  *       200:
- *         description: User signed in successfully
+ *         description: Signed in Successfully!
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 token:
+ *                 username:
  *                   type: string
- *                   description: JWT token
+ *                   description: The username
+ *                 email:
+ *                   type: string
+ *                   description: User email address
+ *                 phone:
+ *                   type: number
+ *                   description: User phone number
+ *                 password:
+ *                   type: string
+ *                   description: Enter at least 8 characters password
  *       400:
- *         description: Invalid input
+ *         description: Invalid request data
  *       401:
- *         description: Unauthorized
- */  
+ *         description: User is unverified
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
 userRoutes.post('/signin', signIn);
 userRoutes.post('/sendotpverificationsms', sendOTPVerificationEmailAndSMS);
 /**
@@ -144,6 +170,11 @@ userRoutes.post('/facebooksignup', facebookSignUp);
  * /user/delete:
  *   post:
  *     summary: admin can delete a user
+ *     security:
+ *       - BearerAuth: []
+ *     paramenters:
+ *       - in: path
+ *         name: deleteUserId
  *     requestBody:
  *       required: true
  *       content:
