@@ -31,6 +31,8 @@ searchRoute.get('/', searchVideos);
  * /search/{videoId}:
  *   get:
  *     summary: Retrieve a single video by ID
+ *     security:
+ *       - BearerAuth: []
  *     description: Get details of a video specified by the videoId parameter.
  *     parameters:
  *       - in: path
