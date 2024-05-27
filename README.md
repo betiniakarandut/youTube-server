@@ -55,6 +55,18 @@ The YouTube Server provides a range of functionality across its modules:
 Replace port with your choice. Default port is `5000`.
 visit [localhost:5000/api-docs](http://localhost:5000/api-docs)
 
+## Sample Image of APIs docs
+### - **api-docs page 1**
+[api-docs1](./assets/api-docs1.png) <br>
+<img src="./assets/api-docs1.png">
+
+### - **api-docs page 2**
+[api-docs2](./assets/api-docs2.png) <br>
+<img src="./assets/api-docs2.png">
+
+### - **api-docs page 3**
+[api-docs3](./assets/api-docs3.png) <br>
+<img src="./assets/api-docs3.png">
 ## Contributing and guidelines
 
 We welcome contributions from the community! If you'd like to contribute to the YouTube Server, please follow these steps:
