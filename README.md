@@ -58,15 +58,15 @@ visit [localhost:5000/api-docs](http://localhost:5000/api-docs)
 ## Sample Image of APIs docs
 ### - **api-docs page 1**
 [api-docs1](./assets/api-docs1.png) <br>
-<img src="./assets/api-docs1.png">
+<img src="./assets/api-docs1.png" alt="img1">
 
 ### - **api-docs page 2**
 [api-docs2](./assets/api-docs2.png) <br>
-<img src="./assets/api-docs2.png">
+<img src="./assets/api-docs2.png" alt="img2">
 
 ### - **api-docs page 3**
 [api-docs3](./assets/api-docs3.png) <br>
-<img src="./assets/api-docs3.png">
+<img src="./assets/api-docs3.png" alt="img3">
 ## Contributing and guidelines
 
 We welcome contributions from the community! If you'd like to contribute to the YouTube Server, please follow these steps:
