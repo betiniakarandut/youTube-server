@@ -91,9 +91,85 @@ videoRoute.post('/upload', upload.fields([{name:'file', maxCount: 1 }]), middlew
  *         description: Bad request
  */
 videoRoute.get('/pagination', pagination);
-videoRoute.get('/playback/:videoId', playBackVideo)
+/**
+ * @swagger
+ * /video/playback/{videoId}
+ * get:
+ *  summary: video playback
+ *  description: Playback video of given video ID
+ *  parameters:
+ *    - in: path
+ *      name: videoId
+ *      required: true
+ *      schema:
+ *        type: string
+ *        description: The ID of the video to playback
+ *  responses:
+ *    200:
+ *      description: Video playback URL successful
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              videoId:
+ *                type: string
+ *    404:
+ *      description: Video not found
+ *    500:
+ *      description: Internal server error
+ */
+videoRoute.get('/playback/:videoId', playBackVideo);
+/**
+ * @swagger
+ * /video/trending:
+ *  get:
+ *    summary: Get trending videos
+ *    description: Vidoes within 24hr of upload
+ *  response:
+ *    200:
+ *      description: Trending videos
+ *      content:
+ *        application/json:
+ *          schema:
+ *            types: object
+ *    500:
+ *      description: Internal server error
+ */
 videoRoute.get('/trending', getTrendingVideos);
+/**
+ * @swagger
+ * /video/watched:
+ *  get:
+ *    summary: Get watched videos by user
+ *    security:
+ *      - BearerAuth: []
+ *    description: Videos that the user has watched
+ *  responses:
+ *    200:
+ *      description: user watched list retrieved successfully
+ *    404:
+ *      description: user watched list not found
+ *    500:
+ *      description: Internal server error
+ */
 videoRoute.get('/watched', middlewareAuth, getWatchedVideos);
+/**
+ * @swagger
+ * /video/recommended:
+ *  get:
+ *    summary: Recommend videos for user
+ *    security:
+ *      - BearerAuth: []
+ *    description: Recommend Videos for a user based on user interractions with previous videos
+ *  responses:
+ *    200:
+ *      description: Video recommendation was successful
+ *    404:
+ *      description: No recommended videos yet.
+ *    500:
+ *      description: Internal server error
+ */
 videoRoute.get('/recommended', middlewareAuth, getRecommendedVideos);
 videoRoute.get('/:videoId/analytics/metrics', middlewareAuth, getVideoMetrics);
 videoRoute.get('/:videoId/analytics/engagements', getEngagementMetrics);
