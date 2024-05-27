@@ -49,7 +49,7 @@ The YouTube Server provides a range of functionality across its modules:
 
 - **Payment Processing**:
 - Integrate with payment gateways for fiat currency transactions.
-- Support cryptocurrency transactions for real estate investments.
+- Support cryptocurrency transactions
 
 ## API Documentation
 Replace port with your choice. Default port is `5000`.
