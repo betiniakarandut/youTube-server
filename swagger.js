@@ -89,7 +89,7 @@ const swaggerDefinition = {
     securitySchemes: {
       BearerAuth: {
         type: 'http',
-        scheme: 'bearer token',
+        scheme: 'bearer',
         bearerFormat: 'JWT',
       },
     },
