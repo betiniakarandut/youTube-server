@@ -127,8 +127,8 @@ videoRoute.get('/playback/:videoId', playBackVideo);
  * /video/trending:
  *  get:
  *    summary: Get trending videos
- *    description: Vidoes within 24hr of upload
- *  response:
+ *    description: Videos within 24hr of upload
+ *  responses:
  *    200:
  *      description: Trending videos
  *      content:
@@ -143,34 +143,40 @@ videoRoute.get('/trending', getTrendingVideos);
  * @swagger
  * /video/watched:
  *  get:
- *    summary: Get watched videos by user
+ *    summary: Get a user video watched list
+ *    description: Authenticated user is able vieww
  *    security:
  *      - BearerAuth: []
- *    description: Videos that the user has watched
- *  responses:
- *    200:
- *      description: user watched list retrieved successfully
- *    404:
- *      description: user watched list not found
- *    500:
- *      description: Internal server error
+ *    responses:
+ *      200:
+ *        description: Watched list displayed
+ *      400:
+ *        description: Failed to retrieve watch list.
+ *      401:
+ *        description: Unauthorized - token is required
+ *      500:
+ *        description: Internal server error
  */
 videoRoute.get('/watched', middlewareAuth, getWatchedVideos);
 /**
  * @swagger
  * /video/recommended:
  *  get:
- *    summary: Recommend videos for user
+ *    summary: Recommend video for user
+ *    description: Video Recommendation
  *    security:
  *      - BearerAuth: []
- *    description: Recommend Videos for a user based on user interractions with previous videos
- *  responses:
- *    200:
- *      description: Video recommendation was successful
- *    404:
- *      description: No recommended videos yet.
- *    500:
- *      description: Internal server error
+ *    responses:
+ *      200:
+ *        description: Your recommended videos
+ *      400:
+ *        description: Failed to retrieve recommended videos.
+ *      401:
+ *        description: Unauthorized - token is required
+ *      404:
+ *        description: No recommendations yet
+ *      500:
+ *        description: Internal server error
  */
 videoRoute.get('/recommended', middlewareAuth, getRecommendedVideos);
 videoRoute.get('/:videoId/analytics/metrics', middlewareAuth, getVideoMetrics);
