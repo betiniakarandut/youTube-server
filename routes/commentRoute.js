@@ -22,7 +22,7 @@ const commentRoute = express.Router();
  *    description: Authenticated user is able to comment on any video
  *    security:
  *      - BearerAuth: []
- *    paramenters:
+ *    parameters:
  *      - in: path
  *        name: videoId
  *        required: true
@@ -141,7 +141,7 @@ commentRoute.delete('/:commentId/delete', middlewareAuth, deleteComment);
  *    description: Authenticated user is able to like comment
  *    security:
  *      - BearerAuth: []
- *    paramenters:
+ *    parameters:
  *      - in: path
  *        name: commentId
  *        required: true
@@ -279,7 +279,7 @@ commentRoute.post('/subcomments/:subcommentId/like', middlewareAuth, likeSubComm
  *      201:
  *        description: You unliked this comment successfully
  *      400:
- *        description: Failed to unlike comment.
+ *        description: Failed to unroutes/commentRoute.js like comment.
  *      401:
  *        description: Unauthorized - token is required
  *      500:
