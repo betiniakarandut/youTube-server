@@ -25,13 +25,9 @@ export const views = async (req, res) => {
             })
         }
 
-        video.views += 1;
-
-        video.save();
-
         return res.status(200).json({
             status: "SUCCESS",
-            message: "Viewed",
+            message: "Views retrieved",
             views: video.views,
         });
     } catch(erro) {
