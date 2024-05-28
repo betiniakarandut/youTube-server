@@ -105,7 +105,7 @@ export const getWatchedVideos = async (req, res) => {
         }
 
         const watchedVideos = await Video.find({creatorId: userId})
-            .sort({views: -1, likes: -1,})
+            .sort({views: -1, likes: -1, commentCount: -1})
             .limit(10)
 
         if(watchedVideos.length === 0){
