@@ -4,6 +4,13 @@ const paymentInstance = new PaymentService();
 
 export const startPayment = async (req, res) => {
     try {
+        const userId = req.user._id;
+        if(!userId){
+            res.status(401).json({
+                status: "FAILED",
+                message: "Unauthorized"
+            });
+        }
         const response = await paymentInstance.startPayment(req.body);
         console.log(response)
         res.status(201).json({ status: "SUCCESS", data: response });
@@ -14,6 +21,13 @@ export const startPayment = async (req, res) => {
 
 export const makePayment = async (req, res) => {
     try {
+        const userId = req.user._id;
+        if(!userId){
+            res.status(401).json({
+                status: "FAILED",
+                message: "Unauthorized"
+            });
+        }
         const response = await paymentInstance.makePayment(req.query);
         console.log(response)
         res.status(201).json({ status: "SUCCESS", data: response });
@@ -25,6 +39,13 @@ export const makePayment = async (req, res) => {
 
 export const getPaymentReceipt = async (req, res) => {
     try {
+        const userId = req.user._id;
+        if(!userId){
+            res.status(401).json({
+                status: "FAILED",
+                message: "Unauthorized"
+            });
+        }
         const response = await paymentInstance.paymentReceipt(req.body);
         console.log(response)
         res.status(201).json({ status: "SUCCESS", data: response });
