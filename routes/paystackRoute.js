@@ -1,14 +1,14 @@
 import express from 'express';
 import { 
     startPayment, 
-    createPayment, 
-    getPayment 
+    getPaymentReceipt,
+    makePayment
 } from '../controllers/paystackController.js';
 
 const paystackRoute = express.Router();
 
-paystackRoute.post('/paystack/start', startPayment);
-paystackRoute.get('/paystack/create', createPayment);
-paystackRoute.post('/paystack/get', getPayment);
+paystackRoute.post('/paystack/startpayment', startPayment);
+paystackRoute.get('/paystack/makepayment', makePayment);
+paystackRoute.post('/paystack/getreceipt', getPaymentReceipt);
 
 export default paystackRoute;

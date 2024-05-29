@@ -12,6 +12,7 @@ import viewsRoute from "./routes/viewsRoutes.js";
 import searchRoute from "./routes/searchAndPlayBackRoute.js";
 import dashboardRoute from "./routes/userDashboardRoute.js";
 import translationRoute from "./routes/translationRoute.js";
+import paystackRoute from "./routes/paystackRoute.js";
 
 
 const app = express();
@@ -31,6 +32,7 @@ app.use('/views', viewsRoute);
 app.use('/search', searchRoute);
 app.use('/dashboard', dashboardRoute);
 app.use('/translation', translationRoute);
+app.use('/payments', paystackRoute);
 
 app.get('/', (req, res) => {
     if (res.statusCode === 200) {

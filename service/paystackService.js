@@ -21,7 +21,7 @@ class PaymentService {
         }
     }
 
-    async createPayment(req) {
+    async makePayment(req) {
         const ref = req.reference;
         if (!ref) {
             throw { code: 400, msg: 'No reference passed in query!' };

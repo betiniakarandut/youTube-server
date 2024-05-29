@@ -12,9 +12,9 @@ export const startPayment = async (req, res) => {
     }
 };
 
-export const createPayment = async (req, res) => {
+export const makePayment = async (req, res) => {
     try {
-        const response = await paymentInstance.createPayment(req.query);
+        const response = await paymentInstance.makePayment(req.query);
         console.log(response)
         res.status(201).json({ status: "SUCCESS", data: response });
     } catch (error) {
@@ -23,7 +23,7 @@ export const createPayment = async (req, res) => {
     }
 };
 
-export const getPayment = async (req, res) => {
+export const getPaymentReceipt = async (req, res) => {
     try {
         const response = await paymentInstance.paymentReceipt(req.body);
         console.log(response)
