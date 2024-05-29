@@ -148,7 +148,7 @@ channelRoute.put('/:channelId/update', middlewareAuth, updateChannel);
 channelRoute.post('/:channelId/subscribe', middlewareAuth, subscribeChannel);
 /**
  * @swagger
- * /channel/{channelId}/subscribe:
+ * /channel/{channelId}/unsubscribe:
  *   delete:
  *     summary: Unsubscribe to a channel
  *     description: Authenticated user can unsubscribe to a channel
