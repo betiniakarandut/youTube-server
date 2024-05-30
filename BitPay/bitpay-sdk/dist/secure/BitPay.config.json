@@ -1,0 +1,15 @@
+{
+    "BitPayConfiguration": {
+        "Environment": "Prod",
+        "EnvConfig": {
+            "Prod": {
+                "PrivateKeyPath": "/home/betini/Desktop/youTube-server/BitPay/bitpay-sdk/dist/secure/private_key_test.key",
+                "PrivateKey": "",
+                "ApiTokens": {
+                    "merchant": "6gLnvHqn3NmTpaThyUnzYK3So4BAGM6CN8easQBAMsTK",
+                    "payout": "6XWkFHsQCMmom5A2hfrrA2MivuJcuVREvNVDDznrVkwe"
+                }
+            }
+        }
+    }
+}
