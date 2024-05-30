@@ -13,6 +13,7 @@ import searchRoute from "./routes/searchAndPlayBackRoute.js";
 import dashboardRoute from "./routes/userDashboardRoute.js";
 import translationRoute from "./routes/translationRoute.js";
 import paystackRoute from "./routes/paystackRoute.js";
+import bitpayRoute from "./routes/bitpayRoute.js";
 
 
 const app = express();
@@ -33,6 +34,7 @@ app.use('/search', searchRoute);
 app.use('/dashboard', dashboardRoute);
 app.use('/translation', translationRoute);
 app.use('/payments', paystackRoute);
+app.use('/payments', bitpayRoute);
 
 app.get('/', (req, res) => {
     if (res.statusCode === 200) {
