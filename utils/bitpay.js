@@ -6,5 +6,5 @@ const bitpayClient = Client.createClientByConfig(
   configFilePath
 );
 
-console.log(bitpayClient);
+// console.log(bitpayClient);
 export default bitpayClient
