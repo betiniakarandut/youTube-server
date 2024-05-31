@@ -14,7 +14,7 @@ const bitpayRoute = express.Router();
  *  post:
  *    summary: Creates invoice for a user
  *    security:
- *      - BeaererAuth: []
+ *      - BearerAuth: []
  *    requestBody:
  *      required: true
  *      content:
