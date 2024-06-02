@@ -30,7 +30,7 @@ export const middlewareAuth = async (req, res, next) => {
             }
 
             const newToken = generateNewToken(user);
-            res.setHeader('Authorization', `Beare ${newToken}`);
+            res.setHeader('Authorization', `Bearer ${newToken}`);
         }
         // assign user to the id associated with the token
         req.user = user;
