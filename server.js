@@ -14,6 +14,7 @@ import dashboardRoute from "./routes/userDashboardRoute.js";
 import translationRoute from "./routes/translationRoute.js";
 import paystackRoute from "./routes/paystackRoute.js";
 import bitpayRoute from "./routes/bitpayRoute.js";
+import passportAuth from "./utils/passport.js";
 
 
 const app = express();
@@ -22,6 +23,7 @@ app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
+passport(app);
 swaggerSetup(app);
 
 app.use('/user', userRoutes);
