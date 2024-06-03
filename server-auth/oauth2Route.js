@@ -1,15 +1,14 @@
 import express from "express";
 import { 
-    codeTokenExchange, 
-    getAuthorized, 
-    isApproved 
+    getAuthorize,
+    getToken,
+    postApprove, 
 } from "./oauth2Controller.js";
-import { middlewareAuth } from "../middlewares/userAuth.js";
 
 const oauth2Route = express.Router();
 
-oauth2Route.get('/authorize', middlewareAuth, getAuthorized);
-oauth2Route.post('/approve', middlewareAuth, isApproved);
-oauth2Route.get('/token', middlewareAuth, codeTokenExchange);
+oauth2Route.get('/authorize', getAuthorize);
+oauth2Route.post('/approve', postApprove);
+oauth2Route.get('/token', getToken);
 
 export default oauth2Route;
