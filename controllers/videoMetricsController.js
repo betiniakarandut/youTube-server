@@ -55,6 +55,7 @@ export const getVideoMetrics = async(req, res) => {
 export const getEngagementMetrics = async (req, res) => {
     try {
         const metricId = req.params.metricId;
+        const videoId = req.params.videoId;
         
         const isVideo = await VideoMetrics.findOne(metricId);
         console.log(isVideo);

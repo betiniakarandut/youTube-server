@@ -49,13 +49,6 @@ export const userDashboard = async (req, res) => {
 
         console.log(myDashboard);
 
-        // if (myDashboard.videos.includes(videos._id)) {
-        //     return res.status(400).json({
-        //         status: "FAILED",
-        //         message: "Already in the list",
-        //     });
-        // }
-
         return res.status(200).json({
             status: "SUCCESS",
             message: "User Dashboard created",
