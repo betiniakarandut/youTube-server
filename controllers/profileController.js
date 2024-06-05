@@ -74,17 +74,27 @@ export const getUserProfile = async(req, res) => {
 }
 
 export const deleteProfile = async(req, res) => {
-    const profileId = rq.params.profileId;
-    const userId = req.user._id;
-    const isAdmin = process.env.ADMIN.includes(req.user.email);
-    if(!userId || !isAdmin){
-        res.status(403).send("Action Forbiddened");
+    try {
+        const profileId = req.params.profileId;
+        const userId = req.user._id;
+        const isAdmin = process.env.ADMIN.includes(req.user.email);
+        if(!userId || !isAdmin){
+            res.status(403).send("Action Forbiddened");
+        }
+        if(!profileId){
+            res.status(400).send('Profile ID missing in parameters')
+        }
+        const profile = await Profile.findById(profileId);
+        if(!profile){
+            res.status(404).send('Profile not found.')
+        }
+        await Profile.findByIdAndDelete(profileId);
+        
+        res.status(200).send('Profile deleted from database successfully');
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({error: 'Internal server error.'})
     }
-    if(!profileId){
-        res.status(400).send('Profile ID missing in parameters')
-    }
-    await Profile.findByIdAndDelete(profileId);
-    res.status(200).send('Profile deleted from database successfully');
 }
 
 export const updateProfile = async (req, res) => {
