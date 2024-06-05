@@ -10,11 +10,11 @@ cloudinary.config({
   api_secret: process.env.API_SECRET,
 });
 
-export const getUserProfile = async(req, res) => {
+export const createUserProfile = async(req, res) => {
     try {
         const userId = req.user._id;
         if (!userId) {
-            res.status(403).send('Unauthorized');
+            return res.status(403).send('Unauthorized');
         }
 
         const { 
@@ -36,19 +36,19 @@ export const getUserProfile = async(req, res) => {
                 message: "File not found"
             });
         }
-        const result1 = await cloudinary.uploader.upload(file.path, { resource_type: "auto" });
-        console.log(result1)
+        const result = await cloudinary.uploader.upload(file.path, { resource_type: "auto" });
+        console.log(result)
         
         if (!full_name || !address || !zip_code || !maiden_name || !hobby || !bio || !date_of_birth || !gender || !nationality) {
-            res.status(400).send('Incomplete data');
+            return res.status(400).send('Incomplete data');
         }
         if (bio.length < 50) {
             const msg = 'Please enter at least 50 characters in the bio field';
-            res.status(400).send(`message: ${msg}`);
+            return res.status(400).send(`message: ${msg}`);
         }
-        const existingProfile = await Profile.findOne(userId);
+        const existingProfile = await Profile.findOne({ userId });
         if (existingProfile){
-            res.status(400).send('This user has an existing profile.');
+            return res.status(400).send('This user has an existing profile.');
         }
         const newProfile = new Profile({
             full_name,
@@ -57,15 +57,15 @@ export const getUserProfile = async(req, res) => {
             maiden_name,
             hobby,
             bio,
-            profile_image: file,
+            profile_image: result.secure_url,
             date_of_birth,
             gender,
             nationality,
         });
-        const Profile = await newProfile.save();
+        const savedProfile = await newProfile.save();
         res.status(201).send({
             message: 'New profile created',
-            data: Profile
+            data: savedProfile
         })
     } catch (error) {
         console.log(error);
@@ -73,20 +73,39 @@ export const getUserProfile = async(req, res) => {
     }
 }
 
+export const getUserProfile = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        if (!userId) {
+            return res.status(403).send('Unauthorized');
+        }
+
+        const existingProfile = await Profile.findOne({ userId });
+        if (!existingProfile) {
+            return res.status(404).send('Profile not found');
+        }
+
+        res.status(200).json(existingProfile);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ error: 'Internal server error' });
+    }
+};
+
 export const deleteProfile = async(req, res) => {
     try {
         const profileId = req.params.profileId;
         const userId = req.user._id;
         const isAdmin = process.env.ADMIN.includes(req.user.email);
         if(!userId || !isAdmin){
-            res.status(403).send("Action Forbiddened");
+            return res.status(403).send("Action Forbiddened");
         }
         if(!profileId){
-            res.status(400).send('Profile ID missing in parameters')
+            return res.status(400).send('Profile ID missing in parameters')
         }
         const profile = await Profile.findById(profileId);
         if(!profile){
-            res.status(404).send('Profile not found.')
+            return res.status(404).send('Profile not found.')
         }
         await Profile.findByIdAndDelete(profileId);
         
