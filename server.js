@@ -14,8 +14,8 @@ import dashboardRoute from "./routes/userDashboardRoute.js";
 import translationRoute from "./routes/translationRoute.js";
 import paystackRoute from "./routes/paystackRoute.js";
 import bitpayRoute from "./routes/bitpayRoute.js";
-import passportAuth from "./utils/passport.js";
 import oauth2Route from "./server-auth/oauth2Route.js";
+import profileRoute from "./routes/profileRoute.js";
 
 const app = express();
 app.use(cors());
@@ -23,7 +23,6 @@ app.use(cors());
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-passportAuth(app);
 swaggerSetup(app);
 
 app.use('/user', userRoutes);
@@ -38,6 +37,7 @@ app.use('/translation', translationRoute);
 app.use('/payments', paystackRoute);
 app.use('/payments', bitpayRoute);
 app.use('/auth', oauth2Route);
+app.use('/profile', profileRoute);
 
 app.get('/', (req, res) => {
     if (res.statusCode === 200) {
