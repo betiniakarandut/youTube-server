@@ -26,6 +26,7 @@ export const createUserProfile = async(req, res) => {
             bio,
             date_of_birth,
             gender,
+            country,
             nationality
         } = req.body;
         
@@ -54,6 +55,7 @@ export const createUserProfile = async(req, res) => {
             full_name,
             email: req.user.email,
             phone: req.user.phone,
+            userId: userId,
             address,
             zip_code,
             maiden_name,
@@ -62,6 +64,7 @@ export const createUserProfile = async(req, res) => {
             profile_image: result.secure_url,
             date_of_birth,
             gender,
+            country,
             nationality,
         });
         const savedProfile = await newProfile.save();
@@ -142,6 +145,7 @@ export const updateProfile = async (req, res) => {
             profile_image,
             date_of_birth,
             gender,
+            country,
             nationality
         } = req.body;
 
@@ -154,6 +158,7 @@ export const updateProfile = async (req, res) => {
         existingProfile.profile_image = profile_image || existingProfile.profile_image;
         existingProfile.date_of_birth = date_of_birth || existingProfile.date_of_birth;
         existingProfile.gender = gender || existingProfile.gender;
+        existingProfile.country = country || existingProfile.country;
         existingProfile.nationality = nationality || existingProfile.nationality;
 
         await existingProfile.save();
