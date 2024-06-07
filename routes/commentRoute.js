@@ -164,6 +164,28 @@ commentRoute.delete('/:commentId/delete', middlewareAuth, deleteComment);
  *        description: Internal server error
  */
 commentRoute.post('/:commentId/like', middlewareAuth, likeComment);
+/**
+ * @swagger
+ * /comments/{commentId}/dislike:
+ *  delete:
+ *    summary: Dislike a comment on any video
+ *    description: Authenticated user is able to dislike comment
+ *    security:
+ *      - BearerAuth: []
+ *    parameters:
+ *      - in: path
+ *        name: commentId
+ *        required: true
+ *    responses:
+ *      200:
+ *        description: You disliked this comment
+ *      404:
+ *        description: Comment not found.
+ *      401:
+ *        description: Unauthorized - token is required
+ *      500:
+ *        description: Internal server error
+ */
 commentRoute.delete('/:commentId/dislike', middlewareAuth, unlikeComment);
 /**
  * @swagger
@@ -222,16 +244,8 @@ commentRoute.post('/:commentId/subcomments', middlewareAuth, subComments);
  *        name: CommentId
  *        required: true
  *    responses:
- *      201:
+ *      200:
  *        description: Comment deleted successfully
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                text:
- *                  type: string
- *                  description: Add your comment here
  *      400:
  *        description: Failed to delete comment.
  *      401:
@@ -242,15 +256,15 @@ commentRoute.post('/:commentId/subcomments', middlewareAuth, subComments);
 commentRoute.delete('/subcomments/:subcommentId', middlewareAuth, deleteSubComment);
 /**
  * @swagger
- * /comments//subcomments/{subcommentId}/like:
+ * /comments/subcomments/{subcommentId}/like:
  *  post:
  *    summary: Like a sub-comment on a video
  *    description: Authenticated user is able to like a sub-comment
  *    security:
  *      - BearerAuth: []
- *    paramenters:
+ *    parameters:
  *      - in: path
- *        name: CommentId
+ *        name: subcommentId
  *        required: true
  *    responses:
  *      201:
@@ -265,21 +279,21 @@ commentRoute.delete('/subcomments/:subcommentId', middlewareAuth, deleteSubComme
 commentRoute.post('/subcomments/:subcommentId/like', middlewareAuth, likeSubComment);
 /**
  * @swagger
- * /comments//subcomments/{subcommentId}/unlike:
+ * /comments/subcomments/{subcommentId}/unlike:
  *  delete:
  *    summary: Unlike a sub-comment on a video
  *    description: Authenticated user is able to unlike a sub-comment
  *    security:
  *      - BearerAuth: []
- *    paramenters:
+ *    parameters:
  *      - in: path
- *        name: CommentId
+ *        name: subcommentId
  *        required: true
  *    responses:
- *      201:
+ *      200:
  *        description: You unliked this comment successfully
  *      400:
- *        description: Failed to unroutes/commentRoute.js like comment.
+ *        description: Failed to like comment.
  *      401:
  *        description: Unauthorized - token is required
  *      500:
