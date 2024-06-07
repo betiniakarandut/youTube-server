@@ -98,7 +98,7 @@ const swaggerDefinition = {
 
 const options = {
   definition: swaggerDefinition,
-  apis: ['./routes/*.js'],
+  apis: ['./routes/*.js', './server-auth/oauth2Route.js'],
 }
 
 const swaggerSpec = swaggerJSDoc(options);
