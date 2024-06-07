@@ -144,7 +144,7 @@ videoRoute.get('/trending', getTrendingVideos);
  * /video/watched:
  *  get:
  *    summary: Get a user video watched list
- *    description: Authenticated user is able vieww
+ *    description: Authenticated user is able to see his watchlist
  *    security:
  *      - BearerAuth: []
  *    responses:
