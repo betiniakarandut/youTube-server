@@ -113,9 +113,10 @@ export const updateChannel = async (req, res) => {
                 message: "Not found: No existing channel"
             })
         }
-        // check what action wants to perform
-        if(name) retrieveChannel.name = name;
-        if(description) retrieveChannel.description = description;
+        retrieveChannel.name = name || retrieveChannel.name;
+        retrieveChannel.description = description || retrieveChannel.description;
+        // if(name) retrieveChannel.name = name;
+        // if(description) retrieveChannel.description = description;
 
         await retrieveChannel.save();
 
@@ -204,6 +205,9 @@ export const unSubscribeChannel = async (req, res) => {
             });
         }
 
+        if (!existingChannel.subscribers.includes(userId)){
+            return res.status(400).send('User is not subscribed')
+        }
         existingChannel.subscribers.pop(userId);
         existingChannel.subcribersCount -= 1;
 
