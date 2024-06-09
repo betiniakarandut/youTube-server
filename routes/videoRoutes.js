@@ -6,6 +6,7 @@ import { pagination } from "../controllers/videoPagination.js";
 import { getWatchedVideos, playBackVideo, retrieveVideo } from "../controllers/retrievalAndPlaybackVideo.js";
 import { getRecommendedVideos, getTrendingVideos } from "../controllers/trendingVideos.js";
 import { getEngagementMetrics, getVideoMetrics } from "../controllers/videoMetricsController.js";
+import { getDownloads, getHistory } from "../controllers/history.js";
 
 const videoRoute = express.Router();
 
@@ -181,5 +182,53 @@ videoRoute.get('/watched', middlewareAuth, getWatchedVideos);
 videoRoute.get('/recommended', middlewareAuth, getRecommendedVideos);
 videoRoute.get('/:videoId/analytics/metrics', middlewareAuth, getVideoMetrics);
 videoRoute.get('/:videoId/analytics/engagements', getEngagementMetrics);
+/**
+ * @swagger
+ * /video/download/{videoId}:
+ *   get:
+ *     summary: Video download
+ *     security:
+ *       - BearerAuth: []
+ *     description: Authenticated user can Download a video
+ *     parameters:
+ *       - in: path
+ *         name: videoId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the video to download
+ *     responses:
+ *       200:
+ *         description: Successfully downloaded video
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 userId:
+ *                   type: string
+ *       404:
+ *         description: Video not found
+ *       500:
+ *         description: Internal server error
+ */
+videoRoute.get('/download/:videoId', middlewareAuth, getDownloads);
+/**
+ * @swagger
+ * /video/history:
+ *   get:
+ *     summary: Video download and playlist history
+ *     security:
+ *       - BearerAuth: []
+ *     description: Authenticated user can see download and playlist history
+ *     responses:
+ *       200:
+ *         description: History
+ *       404:
+ *         description: Video not found
+ *       500:
+ *         description: Internal server error
+ */
+videoRoute.get('/history', middlewareAuth, getHistory);
 
 export default videoRoute;
