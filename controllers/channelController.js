@@ -1,5 +1,4 @@
 import Channel from "../models/channelModel.js";
-import Video from "../models/videoModel.js";
 
 export const createChannel = async (req, res) => {
     try {
