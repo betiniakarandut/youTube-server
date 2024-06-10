@@ -16,6 +16,7 @@ import paystackRoute from "./routes/paystackRoute.js";
 import bitpayRoute from "./routes/bitpayRoute.js";
 import oauth2Route from "./server-auth/oauth2Route.js";
 import profileRoute from "./routes/profileRoute.js";
+import adRoute from "./routes/adsRoute.js";
 
 const app = express();
 app.use(cors());
@@ -38,6 +39,7 @@ app.use('/payments', paystackRoute);
 app.use('/payments', bitpayRoute);
 app.use('/auth', oauth2Route);
 app.use('/profile', profileRoute);
+app.use('/ad', adRoute);
 
 app.get('/', (req, res) => {
     if (res.statusCode === 200) {
