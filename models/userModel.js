@@ -38,6 +38,7 @@ const userSchema = new mongoose.Schema({
         postalcode: String,
     },
     watchedVideos: [],
+    isPremium: {type: Boolean, default: false},
 })
 
 const User = mongoose.model('User', userSchema)
