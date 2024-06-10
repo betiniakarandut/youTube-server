@@ -8,6 +8,7 @@ import {
     verifyOTP,
     sendOTPVerificationEmailAndSMS,
     deleteUser,
+    updateUser,
 } from '../controllers/userController.js';
 import { facebookSignUp, githubSignUp } from '../controllers/githubFacebookIntegration.js';
 import { middlewareAuth } from '../middlewares/userAuth.js';
@@ -188,5 +189,6 @@ userRoutes.post('/facebooksignup', facebookSignUp);
  *         description: Invalid input
  */
 userRoutes.delete('/:deletedUserId/deleteuser', middlewareAuth, deleteUser);
+userRoutes.put('/update', middlewareAuth, updateUser);
 
 export default userRoutes;
