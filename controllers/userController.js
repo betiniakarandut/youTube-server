@@ -398,3 +398,40 @@ export const deleteUser = async(req, res) => {
         });
     }
 } 
+
+export const updateUser = async(req, res) => {
+    try {
+        const user = req.user;
+        const userId = req.user._id;
+        const { username, email, password, phone } = req.body;
+
+        if (!userId && user.admin == false) {
+            return res.status(403).json({
+                status: "SUCCESS",
+                message: "user is forbidden"
+            });
+        }
+
+        const existingUser = await User.findById(userId);
+        
+        existingUser.username = username || existingUser.username;
+        existingUser.email = email || existingUser.email;
+        existingUser.password = password || existingUser.password;
+        existingUser.phone = phone || existingUser.phone;
+
+        const updatedUser = existingUser.save();
+
+        return res.status(200).json({
+            status: "SUCCESS",
+            message: "User info upadated successfully",
+            newData: updatedUser,
+        });
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            status: "FAILED",
+            message: "Internal server error"
+        });
+    }
+} 
