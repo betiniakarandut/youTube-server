@@ -31,12 +31,6 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
     },
-    address: {
-        street: String,
-        city: String,
-        country: String,
-        postalcode: String,
-    },
     watchedVideos: [],
     isPremium: {type: Boolean, default: false},
 })
