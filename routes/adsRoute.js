@@ -21,8 +21,92 @@ const upload = multer({storage: storage});
 const adRoute = express.Router();
 
 adRoute.post('/create', upload.fields([{name: 'file', maxCount: 1}]), middlewareAuth, uploadAd);
-adRoute.get('/', middlewareAuth, getVideo);
+/**
+ * @swagger
+ * /add/{videoId}:
+ *   get:
+ *     summary: Delete ad by ID
+ *     security:
+ *       - BearerAuth: []
+ *     description: Auth user can ad
+ *     parameters:
+ *       - in: path
+ *         name: videId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           description: The ID of the ad
+ *     responses:
+ *       200:
+ *         description: Successfully display ad
+ *                   type: string
+ *       404:
+ *         description: ad not found
+ *       500:
+ *         description: Internal server error
+ */
+adRoute.get('/:videoId', middlewareAuth, getVideo);
+/**
+ * @swagger
+ * /add/delete/{adId}:
+ *   get:
+ *     summary: Delete ad by ID
+ *     security:
+ *       - BearerAuth: []
+ *     description: Auth user can delete ad
+ *     parameters:
+ *       - in: path
+ *         name: adId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           description: The ID of the ad
+ *     responses:
+ *       200:
+ *         description: Successfully leted ad
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 userId:
+ *                   type: string
+ *       404:
+ *         description: ad not found
+ *       500:
+ *         description: Internal server error
+ */
 adRoute.delete('/delete/:adId', middlewareAuth, deleteAd);
-adRoute.put('/update/:adId', upload.fields([{name: 'file', maxCount: 1}]), middlewareAuth, updateAd);
+/**
+ * @swagger
+ * /add/delete/{adId}:
+ *   put:
+ *     summary: Update fields
+ *     security:
+ *       - BearerAuth: []
+ *     description: Auth user can update ad
+ *     parameters:
+ *       - in: path
+ *         name: videoId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           description: The ID of the ad
+ *     responses:
+ *       200:
+ *         description: Successfully leted ad
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 userId:
+ *                   type: string
+ *       404:
+ *         description: ad not found
+ *       500:
+ *         description: Internal server error
+ */
+adRoute.put('/update/:adId', middlewareAuth, updateAd);
 
 export default adRoute;
