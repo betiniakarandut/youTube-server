@@ -1,5 +1,5 @@
-import Video from "models/videoModel.js";
-import Ad from "models/adsModel.js";
+import Video from "../models/videoModel.js";
+import Ad from "../models/adsModel.js";
 import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
 
@@ -50,17 +50,17 @@ export const getVideo = async (req, res) => {
 export const uploadAd = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { title, description } = req.body;
+        const { title, description, duration } = req.body;
         if (!userId){
           return res.status(403).send('Unauthorized');
         }
-        if (!title || !description || description.length < 20) {
+        if (!title || !description || description.length < 20 || !duration) {
           return res.status(400).send({
             title: 'ad must have title',
             description: 'ad must have description at least 20 characters',
           });
         }
-        const file = req.files;
+        const file = req.files['file'][0];
         if(!file){
           return res.status(400).send('Upload a media file for your ad');
         }
@@ -70,7 +70,9 @@ export const uploadAd = async (req, res) => {
         const newAd = new Ad({
           title:title,
           description:description,
+          ad_duration: duration,
           url: result.secure_url,
+          playback_url: result.playback_url,
         });
         const savedAd = await newAd.save();
         res.status(201).send({
@@ -95,6 +97,10 @@ export const deleteAd = async (req, res) => {
     if(!adId){
       return res.status(400).send('missing ad ID in params')
     }
+    const existingAd = await Ad.findById(adId);
+    if(!existingAd){
+      return res.status(404).send('Ad not found')
+    }
     await Ad.findByIdAndDelete(adId);
     res.status(200).send('Ad deleted successfully');
   } catch (error) {
@@ -107,28 +113,23 @@ export const updateAd = async(req, res) => {
   try {
     const userId = req.user._id;
     const adId = req.params.adId;
-    const { title, description } = req.body;
+    const { title, description, ad_duration } = req.body;
     if(!userId){
       return res.status(403).send('Unauthorized');
     }
     if (!adId){
       return res.status(400).send('missing ad ID in params')
     }
-    const existingAd = await Ad.findOne({ adId });
+    const existingAd = await Ad.findOne({ _id: adId });
     if(!existingAd){
       return res.status(404).send('Ad  not found');
     }
-    const file = req.files;
-    if (!file){
-      return res.status(400).send('Upload a media file for your add')
-    }
-    const result = await cloudinary.uploader.upload(file.path, {resource_type: 'auto'});
-    console.log(result);
 
     existingAd.title = title || existingAd.title;
     existingAd.description = description || existingAd.description;
-    existingAd.url = result.secure_url || existingAd.url;
-    const updatedAd = existingAd.save();
+    existingAd.duration = ad_duration || existingAd.duration;
+
+    const updatedAd = await existingAd.save();
     res.status(200).send({
       message: 'Ad updated successfully',
       newData: updatedAd,
