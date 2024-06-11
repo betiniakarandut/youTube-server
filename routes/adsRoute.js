@@ -25,7 +25,7 @@ adRoute.post('/create', upload.fields([{name: 'file', maxCount: 1}]), middleware
  * @swagger
  * /add/{videoId}:
  *   get:
- *     summary: Delete ad by ID
+ *     summary: Display ad by video ID
  *     security:
  *       - BearerAuth: []
  *     description: Auth user can ad
@@ -39,7 +39,6 @@ adRoute.post('/create', upload.fields([{name: 'file', maxCount: 1}]), middleware
  *     responses:
  *       200:
  *         description: Successfully display ad
- *                   type: string
  *       404:
  *         description: ad not found
  *       500:
@@ -49,7 +48,7 @@ adRoute.get('/:videoId', middlewareAuth, getVideo);
 /**
  * @swagger
  * /add/delete/{adId}:
- *   get:
+ *   delete:
  *     summary: Delete ad by ID
  *     security:
  *       - BearerAuth: []
@@ -79,7 +78,7 @@ adRoute.get('/:videoId', middlewareAuth, getVideo);
 adRoute.delete('/delete/:adId', middlewareAuth, deleteAd);
 /**
  * @swagger
- * /add/delete/{adId}:
+ * /add/update/{adId}:
  *   put:
  *     summary: Update fields
  *     security:
