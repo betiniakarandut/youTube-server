@@ -13,22 +13,22 @@ dotenv.config()
 
 console.log("Is working!")
 
-const sendVerificationEmail = async ({ _id, email }, res, uniqueString) => {
-    const urlSender = "http://localhost:5000/";
+const sendVerificationEmail = async (user, res, uniqueString) => {
+    const urlSender = "http://0.0.0.0:5000/";
     const hashedUniqueString = await bcrypt.hash(uniqueString, 10);
 
     const mailOptions = {
         from: process.env.AUTH_EMAIL,
-        to: email,
+        to: user.email,
         subject: "Verify your email",
         html: `<p>Verify your email and complete your account setup</p><p>Link expires in 10hrs.</p>
-        <p>Press the link <a href=${urlSender + "user/verify/" + _id + "/" + uniqueString}>here</a>
+        <p>Press the link <a href=${urlSender + "user/verify/" + user._id + "/" + uniqueString}>here</a>
         to proceed</p>`
     };
 
     try {
         const newVerification = new userVerification({
-            userId: _id,
+            userId: user._id,
             uniqueId: hashedUniqueString,
             createdAt: Date.now(),
             expiresAt: Date.now() + (10 * 60 * 60 * 1000) // 10 hours in milliseconds
@@ -44,10 +44,7 @@ const sendVerificationEmail = async ({ _id, email }, res, uniqueString) => {
         });
 
         await transporter.sendMail(mailOptions);
-        
-        return res.status(200).json({
-            message: "Pending!"
-        });
+
     } catch (error) {
         console.error("Error sending verification email:", error);
         return res.status(400).json({
@@ -55,7 +52,7 @@ const sendVerificationEmail = async ({ _id, email }, res, uniqueString) => {
             message: `Unable to send email: ${error}`
         });
     }
-}
+};
 
 console.log("Is working!")
 
@@ -112,10 +109,10 @@ export const signUp = async (req, res) => {
     
             await sendOTPVerificationEmailAndSMS(savedUser, res);
 
-            return res.status(200).json({
-                message: "New user created successfully",
-                userDetails: savedUser
-            });
+            // return res.status(200).json({
+            //     message: "New user created successfully",
+            //     userDetails: savedUser
+            // });
         }
 
         const newUser = new User({
@@ -130,24 +127,24 @@ export const signUp = async (req, res) => {
         
         await sendOTPVerificationEmailAndSMS(savedUser, res);
 
-        return res.status(200).json({
-            message: "New user created successfully",
-            userDetails: savedUser
-        });
+        // res.status(201).send({
+        //     message: "New user created successfully",
+        //     userDetails: savedUser
+        // });
 
     } catch (err) {
         console.error("Error during signup:", err);
-        return res.status(500).json({ message: `Server error: ${err}` });
+        res.status(500).json({ message: `Server error: ${err}` });
     }
 }
 
 export const signIn = async (req, res) => {
     try {
-        const { username, email, password, phone } = req.body;
-        const phoneRegex = /^\+\d{1,2}\s?[\d\s-]{7,13}$/
+        const { email, password } = req.body;
+        // const phoneRegex = /^\+\d{1,2}\s?[\d\s-]{7,13}$/
         const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
-        if(username == '' || email == '' || password == '' || phone == '') {
+        if(email == '' || password == '') {
             return res.json({
                 status: "FAILED",
                 message: "Some input fields are missing"
@@ -162,11 +159,11 @@ export const signIn = async (req, res) => {
                 status: "FAILED",
                 message: "Password must be at least 8 characters long"
             })
-        } else if (phoneRegex.test(phone) == false) {
-            return res.status(400).json({
-                status: "FAILED",
-                message: "Phone number must be in the format +4538278984"
-            })
+        //} // else if (phoneRegex.test(phone) == false) {
+            // return res.status(400).json({
+            //     status: "FAILED",
+            //     message: "Phone number must be in the format +4538278984"
+            // })
         }
 
         const userExist = await User.findOne({email});
@@ -197,7 +194,7 @@ export const signIn = async (req, res) => {
 
         return res.status(200).json({
             message: "Logged in successfully",
-            Token:jwtToken,
+            token:jwtToken,
             user_details: userExist});
     } catch(err){
         return res.status(500).json({message:`Server error: ${err}`})
@@ -293,7 +290,7 @@ export const sendOTPVerificationEmailAndSMS = async ({ _id, email, phone }, res)
         await transporter.sendMail(mailOptions);
         await client.messages.create(smsOptions);
 
-        res.status(200).json({
+        return res.status(200).json({
             status: "PENDING",
             message: "OTP has been sent to your email and through SMS",
             data: {
@@ -311,52 +308,68 @@ export const sendOTPVerificationEmailAndSMS = async ({ _id, email, phone }, res)
     }
 }
 
+
 export const verifyOTP = async (req, res) => {
     try {
         const { userId, otp } = req.body;
 
-        if (userId == '' || otp == '') {
-            throw new Error("Fields must not be empty");
-        } else if (otp.length != 6) {
-            throw new Error("OTP is 6 digits");
-        } else if (!userId) {
-            throw new Error("Invalid id.");
+        if (!userId || !otp) {
+            return res.status(400).json({
+                status: "FAILED",
+                message: "Fields must not be empty"
+            });
+        } 
+        
+        if (otp.length !== 6) {
+            return res.status(400).json({
+                status: "FAILED",
+                message: "OTP is 6 digits"
+            });
         }
 
-        const userOTPRecordTrack = await userOTPVerification.find({userId});
-        if (!userOTPRecordTrack) {
-            throw new Error ("No record found for this user or has been verified already. Try Signing up again!");
+        const userOTPRecordTrack = await userOTPVerification.find({ userId });
+        if (!userOTPRecordTrack.length) {
+            return res.status(400).json({
+                status: "FAILED",
+                message: "No record found for this user or has been verified already. Try Signing up again!"
+            });
         }
 
-        const { expiresAt } = userOTPRecordTrack[0]
-        const hashedOTP = userOTPRecordTrack[0].otp
+        const { expiresAt, otp: hashedOTP } = userOTPRecordTrack[0];
 
         if (expiresAt < Date.now()) {
-            await userOTPVerification.deleteMany({userId});
-            throw new Error("OTP has expired. Signup again");
-        } else {
-           const validateOTP = bcrypt.compare(otp, hashedOTP);
-           if (validateOTP == false) {
-            throw new Error("Invalid OTP")
-           } else {
-            await User.updateOne({_id: userId}, {verified: true});
             await userOTPVerification.deleteMany({ userId });
-
-            return res.status(200).json({
-                status: "Success",
-                message: "Congratulations, your email has verified successfully!",
+            return res.status(400).json({
+                status: "FAILED",
+                message: "OTP has expired. Signup again"
             });
-           }
-        }  
+        }
+
+        const validateOTP = await bcrypt.compare(otp, hashedOTP);
+        if (!validateOTP) {
+            return res.status(400).json({
+                status: "FAILED",
+                message: "Invalid OTP"
+            });
+        }
+
+        await User.updateOne({ _id: userId }, { verified: true });
+        await userOTPVerification.deleteMany({ userId });
+
+        return res.status(200).json({
+            status: "Success",
+            message: "Congratulations, your email has been verified successfully!"
+        });
+
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.status(500).json({
             status: "FAILED",
             message: "Internal server error!"
-        })
-        
+        });
     }
 }
+
 
 export const deleteUser = async(req, res) => {
     try {
