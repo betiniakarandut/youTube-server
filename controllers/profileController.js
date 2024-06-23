@@ -127,7 +127,7 @@ export const updateProfile = async (req, res) => {
         const profileId = req.params.profileId;
 
         if(!userId){
-            return res,status(403).send('Unauthorized')
+            return res.status(403).send('Unauthorized')
         }
         const existingProfile = await Profile.findOne({ _id: profileId });
         
