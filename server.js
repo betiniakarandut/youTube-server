@@ -19,7 +19,12 @@ import profileRoute from "./routes/profileRoute.js";
 import adRoute from "./routes/adsRoute.js";
 
 const app = express();
-app.use(cors());
+const corsOptions = {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  };
+app.use(cors(corsOptions));
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -56,8 +61,8 @@ mongoose.connect(dbConnStr, { useNewUrlParser: true })
 .then( () => {
     console.log("YouTube database is connected");
 
-    app.listen(port, () => {
-        console.log(`server is running on port 127.0.0.1:${port}`);
+    app.listen(port, '0.0.0.0', () => {
+        console.log(`server is running on 0.0.0.0:${port}`);
     })
 }
 ).catch( (err) => {
