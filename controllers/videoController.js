@@ -79,3 +79,20 @@ export const videoUpload = async (req, res) => {
         });
     }
 }
+
+export const getVideos = async(req, res) => {
+    try {
+        const userId = req.user._id;
+        if(!userId){
+            return res.status(403).send('Unauthorized: Login or Sign up to access videos')
+        }
+        const videos = await Video.find();
+        res.status(200).send({
+            msg: 'Get videos was successful',
+            videos: videos
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({msg: 'Internal server error'});
+    }
+}
